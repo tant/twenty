@@ -29,86 +29,168 @@ import httpx
 # =============================================================================
 
 PERSON_FIELDS = [
-    {"name": "pid", "label": "PID", "type": "TEXT", "icon": "IconId", "description": "Ma benh nhan tu HIS"},
-    {"name": "yearOfBirth", "label": "Nam sinh", "type": "NUMBER", "icon": "IconCalendar"},
-    {"name": "dateOfBirth", "label": "Ngay sinh", "type": "DATE", "icon": "IconCake"},
-    {"name": "gender", "label": "Gioi tinh", "type": "SELECT", "icon": "IconGenderBigender",
+    {"name": "pid", "label": "PID", "type": "TEXT", "icon": "IconId", "description": "Mã bệnh nhân từ HIS"},
+    {"name": "yearOfBirth", "label": "Năm sinh", "type": "NUMBER", "icon": "IconCalendar"},
+    {"name": "dateOfBirth", "label": "Ngày sinh", "type": "DATE", "icon": "IconCake"},
+    {"name": "gender", "label": "Giới tính", "type": "SELECT", "icon": "IconGenderBigender",
      "options": [{"label": "Nam", "value": "NAM", "position": 0, "color": "blue"},
-                 {"label": "Nu", "value": "NU", "position": 1, "color": "red"}]},
+                 {"label": "Nữ", "value": "NU", "position": 1, "color": "red"}]},
     {"name": "cccd", "label": "CCCD", "type": "TEXT", "icon": "IconIdBadge2"},
-    {"name": "patientSource", "label": "Nguon", "type": "SELECT", "icon": "IconRoute",
+    {"name": "patientSource", "label": "Nguồn", "type": "SELECT", "icon": "IconRoute",
      "options": [{"label": "Marketing", "value": "MARKETING", "position": 0, "color": "blue"},
-                 {"label": "Benh vien", "value": "BENH_VIEN", "position": 1, "color": "green"},
-                 {"label": "Bac si hop tac", "value": "BAC_SI_HOP_TAC", "position": 2, "color": "turquoise"},
-                 {"label": "Khac", "value": "KHAC", "position": 3, "color": "sky"}]},
-    {"name": "referralPartner", "label": "Doi tac", "type": "TEXT", "icon": "IconUsersGroup"},
-    {"name": "diagnosis", "label": "Chan doan", "type": "TEXT", "icon": "IconStethoscope"},
-    {"name": "contactPerson", "label": "Nguoi lien he", "type": "TEXT", "icon": "IconUser"},
-    {"name": "contactPhone", "label": "SDT lien he", "type": "TEXT", "icon": "IconPhone"},
-    {"name": "spouseName", "label": "Ten vo/chong", "type": "TEXT", "icon": "IconHeart"},
-    {"name": "spousePid", "label": "PID vo/chong", "type": "TEXT", "icon": "IconId"},
-    {"name": "spousePhone", "label": "SDT vo/chong", "type": "TEXT", "icon": "IconPhone"},
-    {"name": "medication", "label": "Thuoc dang dung", "type": "TEXT", "icon": "IconPill"},
-    {"name": "currentCycle", "label": "Chu ky hien tai", "type": "TEXT", "icon": "IconRepeat"},
-    {"name": "iuiDate", "label": "Ngay bom IUI", "type": "DATE_TIME", "icon": "IconCalendar"},
-    {"name": "embryoTransferDate", "label": "Ngay chuyen phoi", "type": "DATE_TIME", "icon": "IconCalendar"},
-    {"name": "betaResult", "label": "Ket qua Beta", "type": "TEXT", "icon": "IconHeartbeat"},
-    {"name": "cancelReason", "label": "Ly do huy chu ky", "type": "TEXT", "icon": "IconAlertTriangle"},
-    {"name": "clinicRoom", "label": "Phong kham", "type": "TEXT", "icon": "IconBuilding"},
-    {"name": "doctorName", "label": "BS phu trach", "type": "TEXT", "icon": "IconStethoscope"},
+                 {"label": "Bệnh viện", "value": "BENH_VIEN", "position": 1, "color": "green"},
+                 {"label": "Bác sĩ hợp tác", "value": "BAC_SI_HOP_TAC", "position": 2, "color": "turquoise"},
+                 {"label": "Khác", "value": "KHAC", "position": 3, "color": "sky"}]},
+    {"name": "referralPartner", "label": "Đối tác giới thiệu", "type": "TEXT", "icon": "IconUsersGroup"},
+    {"name": "diagnosis", "label": "Chẩn đoán", "type": "TEXT", "icon": "IconStethoscope"},
+    {"name": "contactPerson", "label": "Người liên hệ", "type": "TEXT", "icon": "IconUser"},
+    {"name": "contactPhone", "label": "SĐT liên hệ", "type": "TEXT", "icon": "IconPhone"},
+    {"name": "spouseName", "label": "Tên vợ/chồng", "type": "TEXT", "icon": "IconHeart"},
+    {"name": "spousePid", "label": "PID vợ/chồng", "type": "TEXT", "icon": "IconId"},
+    {"name": "spousePhone", "label": "SĐT vợ/chồng", "type": "TEXT", "icon": "IconPhone"},
+    {"name": "medication", "label": "Thuốc đang dùng", "type": "TEXT", "icon": "IconPill"},
+    {"name": "currentCycle", "label": "Chu kỳ hiện tại", "type": "TEXT", "icon": "IconRepeat"},
+    {"name": "iuiDate", "label": "Ngày bơm IUI", "type": "DATE_TIME", "icon": "IconCalendar"},
+    {"name": "embryoTransferDate", "label": "Ngày chuyển phôi", "type": "DATE_TIME", "icon": "IconCalendar"},
+    {"name": "betaResult", "label": "Kết quả Beta", "type": "TEXT", "icon": "IconHeartbeat"},
+    {"name": "cancelReason", "label": "Lý do hủy chu kỳ", "type": "TEXT", "icon": "IconAlertTriangle"},
+    {"name": "clinicRoom", "label": "Phòng khám", "type": "TEXT", "icon": "IconBuilding"},
+    {"name": "doctorName", "label": "BS phụ trách", "type": "TEXT", "icon": "IconStethoscope"},
+    {"name": "treatmentStage", "label": "Giai đoạn điều trị", "type": "SELECT", "icon": "IconProgress",
+     "options": [{"label": "IVF", "value": "IVF", "position": 0, "color": "purple"},
+                 {"label": "IUI", "value": "IUI", "position": 1, "color": "blue"},
+                 {"label": "Thai kỳ", "value": "THAI_KY", "position": 2, "color": "green"},
+                 {"label": "Hoàn thành", "value": "HOAN_THANH", "position": 3, "color": "turquoise"}]},
 ]
 
 TASK_FIELDS = [
-    {"name": "appointmentType", "label": "Loai lich hen", "type": "SELECT", "icon": "IconCalendarEvent",
-     "options": [{"label": "Tai kham", "value": "TAI_KHAM", "position": 0, "color": "blue"},
+    {"name": "appointmentType", "label": "Loại lịch hẹn", "type": "SELECT", "icon": "IconCalendarEvent",
+     "options": [{"label": "Tái khám", "value": "TAI_KHAM", "position": 0, "color": "blue"},
                  {"label": "IUI", "value": "IUI", "position": 1, "color": "green"},
-                 {"label": "Lay trung", "value": "LAY_TRUNG", "position": 2, "color": "orange"},
-                 {"label": "Chuyen phoi", "value": "CHUYEN_PHOI", "position": 3, "color": "purple"},
-                 {"label": "Phau thuat", "value": "PHAU_THUAT", "position": 4, "color": "red"},
+                 {"label": "Lấy trứng", "value": "LAY_TRUNG", "position": 2, "color": "orange"},
+                 {"label": "Chuyển phôi", "value": "CHUYEN_PHOI", "position": 3, "color": "purple"},
+                 {"label": "Phẫu thuật", "value": "PHAU_THUAT", "position": 4, "color": "red"},
                  {"label": "PRP", "value": "PRP", "position": 5, "color": "turquoise"},
-                 {"label": "Sinh nhat", "value": "SINH_NHAT", "position": 6, "color": "yellow"}]},
-    {"name": "appointmentTime", "label": "Gio hen", "type": "TEXT", "icon": "IconClock"},
-    {"name": "arrivalTime", "label": "Gio co mat", "type": "TEXT", "icon": "IconClockHour3"},
-    {"name": "reminderDate", "label": "Ngay nhac lich", "type": "DATE_TIME", "icon": "IconBell"},
-    {"name": "examCode", "label": "Ma kham", "type": "TEXT", "icon": "IconBarcode"},
-    {"name": "doctorAdvice", "label": "Loi dan BS", "type": "TEXT", "icon": "IconMessageDots"},
-    {"name": "clinicRoom", "label": "Phong kham", "type": "TEXT", "icon": "IconBuilding"},
-    {"name": "careType", "label": "Loai cham soc", "type": "SELECT", "icon": "IconHeartHandshake",
-     "options": [{"label": "Noi tru", "value": "NOI_TRU", "position": 0, "color": "blue"},
+                 {"label": "Sinh nhật", "value": "SINH_NHAT", "position": 6, "color": "yellow"}]},
+    {"name": "appointmentTime", "label": "Giờ hẹn", "type": "TEXT", "icon": "IconClock"},
+    {"name": "arrivalTime", "label": "Giờ có mặt", "type": "TEXT", "icon": "IconClockHour3"},
+    {"name": "reminderDate", "label": "Ngày nhắc lịch", "type": "DATE_TIME", "icon": "IconBell"},
+    {"name": "examCode", "label": "Mã khám", "type": "TEXT", "icon": "IconBarcode"},
+    {"name": "doctorAdvice", "label": "Lời dặn BS", "type": "TEXT", "icon": "IconMessageDots"},
+    {"name": "clinicRoom", "label": "Phòng khám", "type": "TEXT", "icon": "IconBuilding"},
+    {"name": "careType", "label": "Loại chăm sóc", "type": "SELECT", "icon": "IconHeartHandshake",
+     "options": [{"label": "Nội trú", "value": "NOI_TRU", "position": 0, "color": "blue"},
                  {"label": "CBNM", "value": "CBNM", "position": 1, "color": "green"},
-                 {"label": "Thu thuat", "value": "THU_THUAT", "position": 2, "color": "orange"},
-                 {"label": "Tai kham", "value": "TAI_KHAM", "position": 3, "color": "purple"},
+                 {"label": "Thủ thuật", "value": "THU_THUAT", "position": 2, "color": "orange"},
+                 {"label": "Tái khám", "value": "TAI_KHAM", "position": 3, "color": "purple"},
                  {"label": "Beta-thai", "value": "BETA_THAI", "position": 4, "color": "red"},
-                 {"label": "Thai ky", "value": "THAI_KY", "position": 5, "color": "turquoise"}]},
-    {"name": "callStatus", "label": "Trang thai goi", "type": "SELECT", "icon": "IconPhoneCall",
-     "options": [{"label": "Chua goi", "value": "CHUA_GOI", "position": 0, "color": "sky"},
-                 {"label": "Da goi", "value": "DA_GOI", "position": 1, "color": "green"},
-                 {"label": "Can goi lai", "value": "CAN_GOI_LAI", "position": 2, "color": "orange"},
-                 {"label": "Khong lien lac duoc", "value": "KHONG_LIEN_LAC", "position": 3, "color": "red"}]},
-    {"name": "callNote", "label": "Ghi chu cuoc goi", "type": "TEXT", "icon": "IconNote"},
-    {"name": "medication", "label": "Thuoc", "type": "TEXT", "icon": "IconPill"},
-    {"name": "doctorName", "label": "BS phu trach", "type": "TEXT", "icon": "IconStethoscope"},
-    {"name": "approvalStatus", "label": "Trang thai duyet", "type": "SELECT", "icon": "IconCheck",
-     "options": [{"label": "Chua duyet", "value": "CHUA_DUYET", "position": 0, "color": "sky"},
-                 {"label": "Da duyet", "value": "DA_DUYET", "position": 1, "color": "green"},
-                 {"label": "Tu choi", "value": "TU_CHOI", "position": 2, "color": "red"}]},
+                 {"label": "Thai kỳ", "value": "THAI_KY", "position": 5, "color": "turquoise"}]},
+    {"name": "callStatus", "label": "Trạng thái gọi", "type": "SELECT", "icon": "IconPhoneCall",
+     "options": [{"label": "Chưa gọi", "value": "CHUA_GOI", "position": 0, "color": "sky"},
+                 {"label": "Đã gọi", "value": "DA_GOI", "position": 1, "color": "green"},
+                 {"label": "Cần gọi lại", "value": "CAN_GOI_LAI", "position": 2, "color": "orange"},
+                 {"label": "Không liên lạc được", "value": "KHONG_LIEN_LAC", "position": 3, "color": "red"}]},
+    {"name": "callNote", "label": "Ghi chú cuộc gọi", "type": "TEXT", "icon": "IconNote"},
+    {"name": "medication", "label": "Thuốc", "type": "TEXT", "icon": "IconPill"},
+    {"name": "doctorName", "label": "BS phụ trách", "type": "TEXT", "icon": "IconStethoscope"},
+    {"name": "approvalStatus", "label": "Trạng thái duyệt", "type": "SELECT", "icon": "IconCheck",
+     "options": [{"label": "Chưa duyệt", "value": "CHUA_DUYET", "position": 0, "color": "sky"},
+                 {"label": "Đã duyệt", "value": "DA_DUYET", "position": 1, "color": "green"},
+                 {"label": "Từ chối", "value": "TU_CHOI", "position": 2, "color": "red"}]},
 ]
 
 # View definitions: (name, icon, type, filter_value, columns[(fieldName, size)])
 CS_VIEWS = [
-    ("CS noi tru", "IconBuildingHospital", "TABLE", "NOI_TRU",
+    ("CS nội trú", "IconBuildingHospital", "TABLE", "NOI_TRU",
      [("title", 220), ("taskTargets", 180), ("callStatus", 130), ("dueAt", 120), ("callNote", 200), ("medication", 150)]),
     ("CS CBNM", "IconStethoscope", "TABLE", "CBNM",
      [("title", 220), ("taskTargets", 180), ("doctorName", 120), ("medication", 150), ("callStatus", 130), ("callNote", 200)]),
-    ("CS thu thuat", "IconNeedle", "TABLE", "THU_THUAT",
+    ("CS thủ thuật", "IconNeedle", "TABLE", "THU_THUAT",
      [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("callStatus", 130), ("callNote", 200)]),
-    ("CS tai kham", "IconCalendar", "TABLE", "TAI_KHAM",
+    ("CS tái khám", "IconCalendar", "TABLE", "TAI_KHAM",
      [("title", 220), ("taskTargets", 180), ("doctorName", 120), ("medication", 150), ("callStatus", 130), ("callNote", 200), ("dueAt", 120)]),
     ("CS beta-thai", "IconHeartbeat", "TABLE", "BETA_THAI",
      [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("approvalStatus", 120), ("callStatus", 130), ("callNote", 200)]),
-    ("CS thai ky", "IconMoodKid", "TABLE", "THAI_KY",
+    ("CS thai kỳ", "IconMoodKid", "TABLE", "THAI_KY",
      [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("callStatus", 130), ("callNote", 200)]),
-    ("CS theo trang thai", "IconLayoutKanban", "KANBAN", None, []),
+    ("CS theo trạng thái", "IconLayoutKanban", "KANBAN", None, []),
+]
+
+# =============================================================================
+# OBJECT RENAMES (Vietnamese labels)
+# =============================================================================
+
+OBJECT_RENAMES = {
+    "company": ("Khoa", "Các Khoa"),
+    "person": ("Bệnh nhân", "Bệnh nhân"),
+    "task": ("Công việc CS", "Công việc CS"),
+    "note": ("Ghi chú", "Ghi chú"),
+    "dashboard": ("Báo cáo", "Báo cáo"),
+    "workflow": ("Quy trình", "Quy trình"),
+}
+
+# =============================================================================
+# CUSTOM OBJECTS
+# =============================================================================
+
+CUSTOM_OBJECTS = [
+    {
+        "nameSingular": "treatmentCycle",
+        "namePlural": "treatmentCycles",
+        "labelSingular": "Chu kỳ điều trị",
+        "labelPlural": "Chu kỳ điều trị",
+        "icon": "IconHeartbeat",
+        "description": "Chu kỳ điều trị IUI/IVF/CBNM của bệnh nhân",
+        "fields": [
+            {"name": "cycleType", "label": "Loại chu kỳ", "type": "SELECT", "icon": "IconList",
+             "options": [{"label": "IUI", "value": "IUI", "position": 0, "color": "blue"},
+                         {"label": "IVF", "value": "IVF", "position": 1, "color": "purple"},
+                         {"label": "CBNM", "value": "CBNM", "position": 2, "color": "green"},
+                         {"label": "PRP", "value": "PRP", "position": 3, "color": "turquoise"}]},
+            {"name": "status", "label": "Trạng thái", "type": "SELECT", "icon": "IconCircleCheck",
+             "options": [{"label": "Đang điều trị", "value": "DANG_DIEU_TRI", "position": 0, "color": "blue"},
+                         {"label": "Hoàn thành", "value": "HOAN_THANH", "position": 1, "color": "green"},
+                         {"label": "Đã hủy", "value": "DA_HUY", "position": 2, "color": "red"}]},
+            {"name": "doctor", "label": "Bác sĩ", "type": "TEXT", "icon": "IconStethoscope"},
+            {"name": "startDate", "label": "Ngày bắt đầu", "type": "DATE", "icon": "IconCalendar"},
+            {"name": "procedureDate", "label": "Ngày thủ thuật", "type": "DATE", "icon": "IconCalendar"},
+            {"name": "betaTestDate", "label": "Ngày xét nghiệm Beta", "type": "DATE", "icon": "IconCalendar"},
+            {"name": "betaResult", "label": "Kết quả Beta", "type": "TEXT", "icon": "IconHeartbeat"},
+            {"name": "cancelReason", "label": "Lý do hủy", "type": "TEXT", "icon": "IconAlertTriangle"},
+            {"name": "generalNotes", "label": "Ghi chú chung", "type": "TEXT", "icon": "IconNote"},
+        ],
+        "relation_to_person": {"targetFieldLabel": "Chu kỳ điều trị", "targetFieldIcon": "IconHeartbeat"},
+    },
+    {
+        "nameSingular": "inpatientStay",
+        "namePlural": "inpatientStays",
+        "labelSingular": "Lần nhập viện",
+        "labelPlural": "Lần nhập viện",
+        "icon": "IconBuildingHospital",
+        "description": "Lần nhập viện nội trú (HTSS, TT/PT, Phụ sản)",
+        "fields": [
+            {"name": "stayType", "label": "Loại nhập viện", "type": "SELECT", "icon": "IconList",
+             "options": [{"label": "HTSS", "value": "HTSS", "position": 0, "color": "blue"},
+                         {"label": "PT-TT", "value": "PT_TT", "position": 1, "color": "orange"},
+                         {"label": "Sản", "value": "SAN", "position": 2, "color": "green"}]},
+            {"name": "admissionDate", "label": "Ngày nhập viện", "type": "DATE", "icon": "IconCalendar"},
+            {"name": "dischargeDate", "label": "Ngày xuất viện", "type": "DATE", "icon": "IconCalendar"},
+            {"name": "procedureType", "label": "Loại thủ thuật", "type": "SELECT", "icon": "IconList",
+             "options": [{"label": "OR (lấy trứng)", "value": "OR", "position": 0, "color": "blue"},
+                         {"label": "ET (chuyển phôi)", "value": "ET", "position": 1, "color": "purple"},
+                         {"label": "FET", "value": "FET", "position": 2, "color": "turquoise"},
+                         {"label": "Mổ lấy thai", "value": "C_SECTION", "position": 3, "color": "red"},
+                         {"label": "Khác", "value": "KHAC", "position": 4, "color": "sky"}]},
+            {"name": "doctor", "label": "Bác sĩ", "type": "TEXT", "icon": "IconStethoscope"},
+            {"name": "room", "label": "Phòng", "type": "TEXT", "icon": "IconBuilding"},
+            {"name": "satisfaction", "label": "Hài lòng", "type": "SELECT", "icon": "IconMoodSmile",
+             "options": [{"label": "Hài lòng", "value": "HAI_LONG", "position": 0, "color": "green"},
+                         {"label": "Tiêu cực", "value": "TIEU_CUC", "position": 1, "color": "red"},
+                         {"label": "Chưa khảo sát", "value": "CHUA_KHAO_SAT", "position": 2, "color": "sky"}]},
+            {"name": "generalNotes", "label": "Ghi chú chung", "type": "TEXT", "icon": "IconNote"},
+        ],
+        "relation_to_person": {"targetFieldLabel": "Lần nhập viện", "targetFieldIcon": "IconBuildingHospital"},
+    },
 ]
 
 # =============================================================================
@@ -442,6 +524,135 @@ def cleanup_navigation(api: TwentyAPI):
         print("   No items to remove")
 
 
+def cleanup_workflows(api: TwentyAPI):
+    """Delete default Quick Lead workflow."""
+    print("\n4b. Removing default workflows...")
+    try:
+        resp = api.rest("GET", "workflows?limit=20")
+        workflows = resp.get("data", {}).get("workflows", [])
+        for wf in workflows:
+            if wf.get("name") == "Quick Lead":
+                api.rest("DELETE", f"workflows/{wf['id']}")
+                print(f"   Removed: Quick Lead")
+                return
+        print("   No Quick Lead workflow found")
+    except Exception as e:
+        print(f"   Workflow cleanup: {e}")
+
+
+def rename_objects(api: TwentyAPI):
+    """Rename standard objects to Vietnamese labels."""
+    print("\n4c. Renaming objects to Vietnamese...")
+    for obj_name, (label_s, label_p) in OBJECT_RENAMES.items():
+        try:
+            obj_id = api.get_object_id(obj_name)
+            api._gql(
+                'mutation($input: UpdateOneObjectInput!) { updateOneObject(input: $input) { id } }',
+                {"input": {"id": obj_id, "update": {"labelSingular": label_s, "labelPlural": label_p}}},
+            )
+            print(f"   {obj_name} → {label_s}")
+        except Exception as e:
+            print(f"   {obj_name}: {e}")
+
+
+def create_custom_objects(api: TwentyAPI):
+    """Create Treatment Cycle and Inpatient Stay custom objects with fields and relations."""
+    print(f"\n5b. Creating custom objects ({len(CUSTOM_OBJECTS)})...")
+    person_id = api.get_object_id("person")
+
+    for obj_def in CUSTOM_OBJECTS:
+        # Create object
+        try:
+            r = api._gql(
+                'mutation($input: CreateOneObjectInput!) { createOneObject(input: $input) { id nameSingular } }',
+                {"input": {"object": {
+                    "nameSingular": obj_def["nameSingular"],
+                    "namePlural": obj_def["namePlural"],
+                    "labelSingular": obj_def["labelSingular"],
+                    "labelPlural": obj_def["labelPlural"],
+                    "icon": obj_def.get("icon", "IconList"),
+                    "description": obj_def.get("description", ""),
+                }}},
+            )
+            obj_id = r["data"]["createOneObject"]["id"]
+            print(f"   Created: {obj_def['labelSingular']} ({obj_id[:12]}..)")
+        except Exception as e:
+            err = str(e).lower()
+            if "already exists" in err or "duplicate" in err or "validation error" in err:
+                try:
+                    obj_id = api.get_object_id(obj_def["nameSingular"])
+                    print(f"   Exists: {obj_def['labelSingular']}")
+                except Exception:
+                    print(f"   FAIL creating {obj_def['labelSingular']}: {e}")
+                    continue
+            else:
+                print(f"   FAIL creating {obj_def['labelSingular']}: {e}")
+                continue
+
+        # Create fields
+        existing = api.get_fields(obj_id)
+        created = 0
+        for f in obj_def.get("fields", []):
+            if f["name"] not in existing:
+                if api.create_field(obj_id, f):
+                    created += 1
+        if created:
+            print(f"      + {created} fields")
+
+        # Create relation to Person
+        rel = obj_def.get("relation_to_person")
+        if rel:
+            existing = api.get_fields(obj_id)
+            if "person" not in existing:
+                try:
+                    api._gql(
+                        'mutation($input: CreateOneFieldMetadataInput!) { createOneField(input: $input) { id } }',
+                        {"input": {"field": {
+                            "name": "person",
+                            "label": "Bệnh nhân",
+                            "type": "RELATION",
+                            "objectMetadataId": obj_id,
+                            "icon": "IconUser",
+                            "relationCreationPayload": {
+                                "type": "MANY_TO_ONE",
+                                "targetObjectMetadataId": person_id,
+                                "targetFieldLabel": rel["targetFieldLabel"],
+                                "targetFieldIcon": rel["targetFieldIcon"],
+                            },
+                        }}},
+                    )
+                    print(f"      + relation → Bệnh nhân")
+                except Exception as e:
+                    if "already exists" not in str(e).lower():
+                        print(f"      Relation fail: {e}")
+
+
+def create_workflows(api: TwentyAPI):
+    """Create BVHM draft workflows."""
+    print("\n8b. Creating BVHM workflows...")
+    workflow_defs = [
+        ("Thai kỳ Auto-Create", "Tự tạo task CS thai kỳ khi BN chuyển giai đoạn"),
+        ("Thai kỳ Recurring", "Tự tạo task mới khi hoàn thành gọi CS thai kỳ"),
+        ("Cảnh báo task quá hạn", "Tìm task quá hạn chưa xử lý mỗi ngày"),
+    ]
+
+    try:
+        existing = api.rest("GET", "workflows?limit=20")
+        existing_names = {wf["name"] for wf in existing.get("data", {}).get("workflows", [])}
+    except Exception:
+        existing_names = set()
+
+    for name, desc in workflow_defs:
+        if name in existing_names:
+            print(f"   Exists: {name}")
+            continue
+        try:
+            api.rest("POST", "workflows", {"name": name})
+            print(f"   Created (draft): {name}")
+        except Exception as e:
+            print(f"   FAIL: {name} — {e}")
+
+
 def create_custom_fields(api: TwentyAPI):
     """Create custom fields on Person and Task objects."""
     print(f"\n5. Creating Person fields ({len(PERSON_FIELDS)})...")
@@ -631,13 +842,17 @@ def main():
     print("\n1. Authenticating...")
     api.ensure_auth(args.email, password)
 
-    # 2-8. Base setup (always runs)
+    # Base setup (always runs)
     cleanup_defaults(api)
+    cleanup_workflows(api)
     deactivate_opportunity(api)
     cleanup_navigation(api)
+    rename_objects(api)
     create_custom_fields(api)
+    create_custom_objects(api)
     create_views(api)
     seed_companies(api)
+    create_workflows(api)
 
     # 9-13. Demo data (only with --level demo)
     if args.level == "demo":
