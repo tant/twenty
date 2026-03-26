@@ -230,28 +230,28 @@ class TwentyAPI:
         )
 
     def login(self, email: str, password: str):
-        """Two-step auth: getLoginToken -> getAuthTokens"""
-        login_origin = self.base_url
+        """Two-step auth: getLoginToken -> getAuthTokens. Account must exist."""
+        origin = self.base_url
         r = self._gql_unauth(
-            f'mutation {{ getLoginTokenFromCredentials(email: "{email}", password: "{password}", '
-            f'origin: "{login_origin}") {{ loginToken {{ token }} }} }}',
+            'mutation($email: String!, $password: String!, $origin: String!) '
+            '{ getLoginTokenFromCredentials(email: $email, password: $password, origin: $origin) '
+            '{ loginToken { token } } }',
+            {"email": email, "password": password, "origin": origin},
         )
         login_token = r["data"]["getLoginTokenFromCredentials"]["loginToken"]["token"]
 
         r = self._gql_unauth(
-            f'mutation {{ getAuthTokensFromLoginToken(loginToken: "{login_token}", '
-            f'origin: "{login_origin}") {{ tokens {{ accessOrWorkspaceAgnosticToken {{ token }} }} }} }}',
+            'mutation($loginToken: String!, $origin: String!) '
+            '{ getAuthTokensFromLoginToken(loginToken: $loginToken, origin: $origin) '
+            '{ tokens { accessOrWorkspaceAgnosticToken { token } } } }',
+            {"loginToken": login_token, "origin": origin},
         )
         self.token = r["data"]["getAuthTokensFromLoginToken"]["tokens"]["accessOrWorkspaceAgnosticToken"]["token"]
 
     def ensure_auth(self, email: str, password: str):
-        """Try login first; if fails, signup + activate."""
-        try:
-            self.login(email, password)
-            print("   Logged in to existing workspace")
-        except Exception:
-            self.signup_and_activate(email, password)
-            print("   Created new workspace")
+        """Login to existing workspace. Account must be created via UI first."""
+        self.login(email, password)
+        print("   Logged in OK")
 
     # -- Low-level --
 
@@ -364,11 +364,16 @@ class TwentyAPI:
         )
 
     def get_nav_items(self) -> list[dict]:
-        r = self._gql('query { navigationMenuItems(paging: { first: 50 }) { edges { node { id name type targetObjectMetadata { id nameSingular } } } } }')
-        return [e["node"] for e in r["data"]["navigationMenuItems"]["edges"]]
+        r = self._gql('query { navigationMenuItems { id name type targetObjectMetadataId } }')
+        return r["data"]["navigationMenuItems"]
+
+    def get_object_name_map(self) -> dict[str, str]:
+        """Returns {objectMetadataId: nameSingular}"""
+        r = self._gql('query { objects { edges { node { id nameSingular } } } }')
+        return {e["node"]["id"]: e["node"]["nameSingular"] for e in r["data"]["objects"]["edges"]}
 
     def delete_nav_item(self, item_id: str):
-        self._gql(f'mutation {{ deleteNavigationMenuItem(input: {{ id: "{item_id}" }}) {{ id }} }}')
+        self._gql(f'mutation {{ deleteNavigationMenuItem(id: "{item_id}") {{ id }} }}')
 
 
 # =============================================================================
@@ -379,31 +384,21 @@ def cleanup_defaults(api: TwentyAPI):
     """Delete upstream demo companies and people."""
     print("\n2. Cleaning up default demo data...")
 
-    # Delete all companies
-    try:
-        companies = api.rest("GET", "companies?limit=50")
-        records = companies.get("data", {}).get("companies", [])
-        if records:
-            for c in records:
-                api.rest("DELETE", f"companies/{c['id']}")
-            print(f"   Deleted {len(records)} default companies")
-        else:
-            print("   No companies to delete")
-    except Exception as e:
-        print(f"   Companies cleanup: {e}")
-
-    # Delete all people
-    try:
-        people = api.rest("GET", "people?limit=50")
-        records = people.get("data", {}).get("people", [])
-        if records:
-            for p in records:
-                api.rest("DELETE", f"people/{p['id']}")
-            print(f"   Deleted {len(records)} default people")
-        else:
-            print("   No people to delete")
-    except Exception as e:
-        print(f"   People cleanup: {e}")
+    for obj_name in ("companies", "people", "opportunities"):
+        try:
+            resp = api.rest("GET", f"{obj_name}?limit=60")
+            records = resp.get("data", {}).get(obj_name, [])
+            if records:
+                for r in records:
+                    try:
+                        api.rest("DELETE", f"{obj_name}/{r['id']}")
+                    except Exception:
+                        pass
+                print(f"   Deleted {len(records)} default {obj_name}")
+            else:
+                print(f"   No {obj_name} to delete")
+        except Exception as e:
+            print(f"   {obj_name} cleanup: {e}")
 
 
 def deactivate_opportunity(api: TwentyAPI):
@@ -420,13 +415,15 @@ def deactivate_opportunity(api: TwentyAPI):
 def cleanup_navigation(api: TwentyAPI):
     """Remove unwanted navigation menu items."""
     print("\n4. Cleaning up navigation...")
+    hide_objects = {"opportunity", "workflowRun", "workflowVersion"}
     try:
+        obj_map = api.get_object_name_map()
         items = api.get_nav_items()
         for item in items:
-            obj = item.get("targetObjectMetadata")
-            if obj and obj.get("nameSingular") in ("opportunity", "workflowRun", "workflowVersion"):
+            obj_name = obj_map.get(item.get("targetObjectMetadataId"), "")
+            if obj_name in hide_objects:
                 api.delete_nav_item(item["id"])
-                print(f"   Removed: {obj['nameSingular']}")
+                print(f"   Removed: {obj_name}")
     except Exception as e:
         print(f"   Navigation cleanup: {e}")
 
@@ -538,7 +535,7 @@ def seed_demo_data(api: TwentyAPI):
         data = {
             "title": t["title"],
             "status": "TODO",
-            "dueAt": due.isoformat() + "Z",
+            "dueAt": due.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "careType": t["careType"],
             "callStatus": t["callStatus"],
         }
@@ -562,7 +559,7 @@ def seed_demo_data(api: TwentyAPI):
         patient_id = patient_map.get(patient_email)
         if patient_id:
             try:
-                api.rest("POST", "taskTargets", {"taskId": task_id, "personId": patient_id})
+                api.rest("POST", "taskTargets", {"taskId": task_id, "targetPersonId": patient_id})
                 linked += 1
             except Exception as e:
                 print(f"   Link fail: {e}")
@@ -573,7 +570,7 @@ def seed_demo_data(api: TwentyAPI):
     note_ids = []
     for n in DEMO_NOTES:
         try:
-            result = api.rest("POST", "notes", {"title": n["title"], "body": n["body"]})
+            result = api.rest("POST", "notes", {"title": n["title"], "bodyV2": {"markdown": n["body"]}})
             nid = result.get("data", {}).get("createNote", {}).get("id") or result.get("id")
             if nid:
                 note_ids.append((nid, n["patientEmail"]))
@@ -588,7 +585,7 @@ def seed_demo_data(api: TwentyAPI):
         patient_id = patient_map.get(patient_email)
         if patient_id:
             try:
-                api.rest("POST", "noteTargets", {"noteId": note_id, "personId": patient_id})
+                api.rest("POST", "noteTargets", {"noteId": note_id, "targetPersonId": patient_id})
                 linked += 1
             except Exception as e:
                 print(f"   Link fail: {e}")
