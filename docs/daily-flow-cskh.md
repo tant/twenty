@@ -1,271 +1,295 @@
-# Quy trình làm việc hàng ngày của nhân viên CSKH trên hệ thống CRM
+# Hướng dẫn sử dụng CRM cho Nhân viên Chăm sóc Khách hàng
 
-**Tài liệu mô tả UI/UX và flow thao tác sau khi triển khai thành công**
-
----
-
-> **Lưu ý phân pha:**
-> - **Phase 1 (hiện tại):** Hệ thống CRM đã sẵn sàng với hồ sơ bệnh nhân, views theo loại CS, workflows tự động, dashboard. Nhân viên tạo công việc CS thủ công hoặc hệ thống tự tạo qua workflow.
-> - **Phase 2 (khi có tích hợp HIS/HIT/IMS):** Dữ liệu bệnh nhân, lịch hẹn, thuốc được đồng bộ tự động. Các mục đánh dấu *(Phase 2)* bên dưới là chức năng chờ tích hợp.
+**Bệnh Viện Hỗ Trợ Sinh Sản & Nam Học Sài Gòn**
+**Địa chỉ hệ thống:** https://bvhmsg.fixpartner.co
 
 ---
 
-## Tổng quan
+## Mục lục
 
-Hệ thống CRM hoạt động theo mô hình **công việc chăm sóc liên kết với bệnh nhân**. Mỗi lần cần chăm sóc (nội trú, tái khám, beta...) hệ thống tạo một công việc gắn với hồ sơ bệnh nhân tương ứng. Nhân viên CSKH làm việc bằng cách **mở danh sách công việc đã được lọc sẵn** theo từng loại chăm sóc, click vào công việc để xem hồ sơ bệnh nhân liên kết, gọi điện và ghi chú trên timeline.
-
-> **Phase 1:** Nhân viên tạo công việc CS thủ công trên CRM (hoặc workflow tự tạo cho thai kỳ). **Phase 2:** Dữ liệu từ HIS/HIT/IMS tự động tạo công việc — không cần đăng nhập hệ thống bệnh viện.
-
----
-
-## 1. Đầu ngày: đăng nhập và xem tổng quan
-
-**Thao tác:** Mở trình duyệt → truy cập địa chỉ CRM → đăng nhập bằng tài khoản được cấp.
-
-**Màn hình chính hiển thị:**
-- Danh sách bệnh nhân cần chăm sóc hôm nay
-- Số bệnh nhân chưa gọi từ hôm qua (nếu có)
-- Cảnh báo nếu có ca quá hạn chưa xử lý
-
-**So sánh với hiện tại:**
-
-| Hiện tại | Trên CRM (Phase 1) | Trên CRM (Phase 2 - có tích hợp) |
-|----------|----------|----------|
-| Đăng nhập HIS, xuất Excel, copy qua Drive... | Mở trình duyệt, tạo task CS thủ công | Mở trình duyệt, danh sách đã sẵn sàng |
-| ~30-60 phút chuẩn bị dữ liệu mỗi sáng | ~10 phút tạo task cho BN cần CS | 0 phút — đồng bộ tự động |
+1. [Đăng nhập và giao diện chính](#1-đăng-nhập-và-giao-diện-chính)
+2. [Quy trình chăm sóc nội trú](#2-quy-trình-chăm-sóc-nội-trú)
+3. [Quy trình chăm sóc CBNM (bệnh nhân mới)](#3-quy-trình-chăm-sóc-cbnm)
+4. [Quy trình nhắc hẹn thủ thuật](#4-quy-trình-nhắc-hẹn-thủ-thuật)
+5. [Quy trình gọi tái khám](#5-quy-trình-gọi-tái-khám)
+6. [Quy trình chăm sóc beta-thai](#6-quy-trình-chăm-sóc-beta-thai)
+7. [Quy trình chăm sóc thai kỳ](#7-quy-trình-chăm-sóc-thai-kỳ)
+8. [Kanban — Theo dõi trạng thái tổng quan](#8-kanban--theo-dõi-trạng-thái-tổng-quan)
+9. [Ghi chú và timeline bệnh nhân](#9-ghi-chú-và-timeline-bệnh-nhân)
+10. [Dashboard báo cáo (dành cho quản lý)](#10-dashboard-báo-cáo)
 
 ---
 
-## 2. Flow chăm sóc nội trú
+## 1. Đăng nhập và giao diện chính
 
-### Hiện tại (6 bước thủ công)
-HIS → xuất Excel → xóa cột → copy sang file nội trú → fill ngày, phòng, BS → tick OR/ET/FET → gọi
+**Bước 1:** Mở trình duyệt → nhập `https://bvhmsg.fixpartner.co`
+**Bước 2:** Nhập email và mật khẩu đã được cấp → bấm **Đăng nhập**
 
-### Trên CRM (2 bước)
+### Thanh bên trái (sidebar)
 
-**Bước 1:** Mở view **"Nội trú"** trong danh sách bệnh nhân → thấy ngay danh sách bệnh nhân nhập/xuất viện hôm nay, đã có sẵn:
-- PID, họ tên, SĐT
-- Ngày vào viện / xuất viện
-- Phòng bệnh, BS thực hiện
-- Khoa (HTSS / PTTT / Sản)
-- Đánh dấu OR / ET / FET (theo lịch thủ thuật)
-
-**Bước 2:** Click vào bệnh nhân → xem chi tiết hồ sơ → gọi điện → tạo ghi chú trên timeline → cập nhật trạng thái chăm sóc sang "Đã gọi".
-
----
-
-## 3. Flow chăm sóc CBNM (ca bệnh nhân mới)
-
-### Hiện tại (5 bước thủ công)
-HIS → báo cáo tiếp đón → xuất Excel → lọc PID → kéo hàm → fill thuốc + PK/BS từ IMS → gọi
-
-### Trên CRM (2 bước)
-
-**Bước 1:** Mở view **"CBNM"** → danh sách bệnh nhân mới hôm nay, đã có sẵn:
-- PID, họ tên, SĐT
-- Thuốc đang sử dụng (fill tự động từ IMS)
-- PK/BS phụ trách (phân loại từ IMS)
-- Ca hủy chu kỳ đã được lọc ra riêng, kèm lý do hủy từ HIS
-
-**Bước 2:** Click vào bệnh nhân → gọi chăm sóc → tạo ghi chú trên timeline → cập nhật trạng thái.
-
----
-
-## 4. Flow nhắc hẹn thủ thuật
-
-### Hiện tại (3 bước thủ công)
-Nhận lịch PHS qua Zalo → nhập PID → fill giờ → gọi nhắc hẹn
-
-### Trên CRM (3 bước — phần này vẫn cần nhập thủ công)
-
-**Bước 1:** Khi PHS ban hành lịch thủ thuật (qua Zalo), nhân viên tìm bệnh nhân theo PID → mở hồ sơ → cập nhật thông tin thủ thuật (loại, ngày, giờ hẹn).
-
-> Lưu ý: phần này chưa tự động được vì lịch PHS gửi qua Zalo, không từ hệ thống. Tuy nhiên, khi nhập PID, hệ thống hiển thị ngay toàn bộ thông tin bệnh nhân — không cần tra cứu thủ công.
-
-**Bước 2:** Gọi nhắc hẹn → tạo ghi chú trên timeline.
-
-**Bước 3:** Cập nhật trạng thái chăm sóc.
-
----
-
-## 5. Flow gọi tái khám
-
-### Hiện tại (6 bước thủ công, phức tạp nhất)
-HIT → xuất lịch hẹn → copy qua Drive → xóa hẹn phòng hồ sơ/cấp cứu → fill thuốc từ sheet IUI/IVF → đối soát chéo 4-5 file (IUI, IVF, CBNM, IMS, HIT) → kiểm tra với file của Doanh → liên hệ HCDD nếu không khớp → gọi
-
-### Trên CRM (2 bước)
-
-**Bước 1:** Mở view **"Tái khám"** → danh sách bệnh nhân cần tái khám hôm nay đã sẵn sàng, bao gồm:
-- PID, họ tên, SĐT
-- Thuốc đang sử dụng
-- Note/nhắc nhở từ phòng khám (nếu có)
-- Hẹn phòng hồ sơ / cấp cứu / hành chính đã được tự động loại bỏ
-- Trường hợp IMS/HIT không trùng khớp → hiển thị cảnh báo để nhân viên kiểm tra hoặc liên hệ HCDD
-
-**Bước 2:** Click vào bệnh nhân → gọi nhắc tái khám → tạo ghi chú trên timeline → cập nhật trạng thái.
-
-> Quy trình hiện tại mất 6 bước đối soát thủ công → trên CRM hệ thống đối soát tự động, nhân viên chỉ cần xử lý các ca cảnh báo.
-
----
-
-## 6. Flow chăm sóc beta-thai
-
-### Hiện tại (5 bước thủ công)
-HIS → xuất lịch tái khám ngày mai → lọc ca beta/thai → kiểm tra chéo file beta + IUI/IVF → kiểm tra ca sảy/lưu → gửi Miss Linh duyệt → gọi
-
-### Trên CRM (3 bước)
-
-**Bước 1:** Mở view **"Beta-thai"** → danh sách bệnh nhân cần chăm sóc beta đã sẵn sàng:
-- **IUI:** các ca ngày sau bơm, cần gọi hôm nay
-- **IVF:** các ca đủ 14 ngày sau chuyển phôi
-- Đã đối soát với danh sách tái khám
-- Ca sảy / ca lưu được đánh dấu riêng
-
-**Bước 2:** Kiểm tra danh sách → gửi quản lý duyệt (nút "Gửi duyệt" trên hệ thống).
-
-**Bước 3:** Sau khi được duyệt → click vào bệnh nhân → gọi chăm sóc → nhập số liệu beta vào hồ sơ → nếu beta đậu, hệ thống tự chuyển giai đoạn sang "Mang thai" và tạo lịch chăm sóc thai kỳ hàng tháng.
-
----
-
-## 7. Flow chăm sóc thai kỳ
-
-### Hiện tại
-Nhập thủ công vào file, tự nhớ lịch chăm sóc mỗi tháng 1 lần.
-
-### Trên CRM (1 bước)
-
-Mở view **"Thai kỳ"** → danh sách bệnh nhân mang thai đến hạn chăm sóc tháng này. Hệ thống tự đưa bệnh nhân vào view khi đến hạn (mỗi tháng 1 lần). Nhân viên click vào bệnh nhân → gọi → tạo ghi chú trên timeline → cập nhật trạng thái.
-
-> Ca sảy / ca lưu được đánh dấu riêng và không xuất hiện trong view nữa.
-
----
-
-## 8. Cuối ngày: cập nhật và báo cáo
-
-**Nhân viên:**
-- Kiểm tra các bệnh nhân chưa gọi được, ghi chú lý do (không liên lạc được, hẹn gọi lại...)
-- Cập nhật trạng thái phù hợp: "Cần gọi lại" / "Không liên lạc được"
-
-**Người điều phối:**
-- Xem tổng quan toàn nhóm: bệnh nhân đã gọi / chưa gọi / quá hạn
-- Phân bổ lại bệnh nhân nếu cần (nhân viên nghỉ, cân bằng khối lượng)
-
-**Quản lý:**
-- Mở dashboard → xem báo cáo: số cuộc gọi, tỷ lệ thành công, ca quá hạn, khối lượng theo nhân viên
-- Không cần hỏi nhân viên tổng hợp — dữ liệu cập nhật real-time
-
----
-
-## 9. Giao diện và bố cục màn hình
-
-### Sidebar (thanh bên trái)
 ```
-├── Khoa (danh sách khoa bệnh viện)
-├── Bệnh nhân (hồ sơ bệnh nhân)
-├── Tasks (công việc chăm sóc)
-│   ├── View: All Tasks
-│   ├── View: CS nội trú
-│   ├── View: CS CBNM
-│   ├── View: CS thủ thuật
-│   ├── View: CS tái khám
-│   ├── View: CS beta-thai
-│   ├── View: CS thai kỳ
-│   └── View: CS theo trạng thái (Kanban)
-├── Notes
-├── Dashboards
-└── Cài đặt
+Workspace
+├── Các Khoa          → Danh sách 11 khoa/phòng khám
+├── Bệnh nhân         → Hồ sơ bệnh nhân
+├── Công việc CS       → Danh sách việc cần làm (★ dùng nhiều nhất)
+│   ├── CS nội trú
+│   ├── CS CBNM
+│   ├── CS thủ thuật
+│   ├── CS tái khám
+│   ├── CS beta-thai
+│   ├── CS thai kỳ
+│   └── CS theo trạng thái (Kanban)
+├── Ghi chú           → Ghi chú lâm sàng
+├── Báo cáo           → Dashboard tổng quan
+├── Quy trình          → Workflows tự động
+├── Chu kỳ điều trị    → Theo dõi IUI/IVF
+└── Lần nhập viện      → Lịch sử nội trú
 ```
 
-> Mỗi view là **một bộ lọc sẵn** trên danh sách công việc chăm sóc. Mỗi công việc liên kết với một bệnh nhân — click vào công việc để xem hồ sơ bệnh nhân liên kết. Nhân viên chuyển giữa các view bằng cách click vào tab view trên thanh trên.
-
-### Màn hình danh sách công việc chăm sóc
-
-Mỗi view hiển thị dạng bảng, các cột khác nhau tùy loại chăm sóc. Cột "Bệnh nhân" hiển thị tên bệnh nhân liên kết — click vào để mở hồ sơ chi tiết.
-
-#### View "Nội trú"
-
-| PID | Họ tên | SĐT | Khoa | Nhập/Xuất | Ngày vào | Ngày xuất | Phòng | BS | OR | ET | FET | Đối tác | Trạng thái CS |
-|-----|--------|-----|------|-----------|----------|-----------|-------|----|----|----|----|---------|---------------|
-| 10234 | Nguyễn Thị Lan | 0912... | HTSS | Xuất viện | 15/3 | 22/3 | P.301 | BS. Minh | ✓ | | | BHYT | Chưa gọi |
-
-#### View "CBNM"
-
-| PID | Họ tên | SĐT | PK | BS | Thuốc | Liệu trình | Hủy CK | Lý do hủy | Trạng thái CS |
-|-----|--------|-----|----|----|-------|-------------|--------|-----------|---------------|
-| 10567 | Phạm Thị Mai | 0945... | PK2 | BS. Hà | Progynova 2mg, Utrogestan | IVF chu kỳ 2 | | | Chưa gọi |
-| 10890 | Trần Thị Hoa | 0908... | PK1 | BS. Long | — | — | ✓ | KH yêu cầu dừng | Không CS |
-
-#### View "Tái khám"
-
-| PID | Họ tên | SĐT | PK | BS | Thuốc | Liệu trình | Note PK | ⚠ Cảnh báo | Trạng thái CS |
-|-----|--------|-----|----|----|-------|-------------|---------|------------|---------------|
-| 10567 | Phạm Thị Mai | 0945... | PK2 | BS. Hà | Progynova 2mg | IVF chu kỳ 2 | Nhắc mang KQ XN | | Chưa gọi |
-| 10789 | Lê Thị Ngọc | 0956... | PK3 | BS. Tú | Gonal-F 75IU | IUI chu kỳ 1 | | ⚠ IMS/HIT không khớp | Cần kiểm tra |
-
-> Dòng có cảnh báo ⚠ hiển thị nổi bật — nhân viên cần liên hệ HCDD kiểm tra trước khi gọi.
-
-#### View "Beta-thai"
-
-| PID | Họ tên | SĐT | Loại | Ngày bơm/chuyển phôi | Ngày đủ hạn | Số liệu beta | Kết quả | Duyệt | Trạng thái CS |
-|-----|--------|-----|------|----------------------|-------------|--------------|---------|-------|---------------|
-| 10234 | Nguyễn Thị Lan | 0912... | IVF | 08/3 | 22/3 (14 ngày) | — | Chờ KQ | Đã duyệt | Chưa gọi |
-| 10345 | Võ Thị Thanh | 0967... | IUI | 21/3 | 22/3 (ngày sau bơm) | 250 | Đậu ✓ | Đã duyệt | Đã gọi |
-
-> Khi nhập kết quả beta đậu trên hồ sơ bệnh nhân → hệ thống tự chuyển giai đoạn sang "Mang thai" và tạo lịch chăm sóc thai kỳ.
-
-#### View "Thai kỳ"
-
-| PID | Họ tên | SĐT | Tuần thai | Ngày dự sinh | Lần CS gần nhất | Ghi chú lần trước | Tình trạng | Trạng thái CS |
-|-----|--------|-----|-----------|--------------|-----------------|-------------------|------------|---------------|
-| 10345 | Võ Thị Thanh | 0967... | Tuần 12 | 20/12/2026 | 22/2/2026 | Thai phát triển bình thường | Bình thường | Chưa gọi |
-| 10456 | Hoàng Thị Yến | 0978... | Tuần 8 | 15/1/2027 | 20/2/2026 | — | ⚠ Sảy | Không CS |
-
-> Ca sảy / ca lưu được đánh dấu riêng và không xuất hiện trong danh sách cần gọi.
+> **Mẹo:** Phần lớn thời gian làm việc nằm ở **Công việc CS**. Click vào tên view để chuyển giữa các loại chăm sóc.
 
 ---
 
-**Thao tác chung trên mọi view:**
-- **Lọc nhanh:** theo trạng thái gọi (Chưa gọi / Đã gọi / Cần gọi lại / Không liên lạc được), theo ngày
-- **Sắp xếp:** theo deadline, theo trạng thái
-- **Tìm kiếm:** nhập PID hoặc tên bệnh nhân
-- **Kanban:** chuyển sang view "CS theo trạng thái" để xem tổng quan dạng cột (Chưa gọi | Đã gọi | Cần gọi lại | Không liên lạc được)
+## 2. Quy trình chăm sóc nội trú
 
-### Màn hình chi tiết bệnh nhân
+**Đối tượng:** Bệnh nhân nhập/xuất viện tại khoa HTSS, PTTT, Sản
 
-Khi click vào bệnh nhân liên kết trong công việc, mở trang chi tiết hồ sơ:
+### Các bước
 
-- **Phần trên:** thông tin cá nhân (tên, PID, SĐT, ngày sinh, CCCD, BHYT, nhóm máu, người thân)
-- **Phần giữa:** thông tin liệu trình (giai đoạn, khoa, PK/BS, thuốc, ngày bơm/chuyển phôi, số liệu beta)
-- **Phần dưới:** timeline — dòng thời gian hiển thị toàn bộ lịch sử:
-  - Ghi chú từ các lần gọi chăm sóc
-  - Thay đổi giai đoạn điều trị
-  - Thay đổi thuốc
-  - Kết quả beta
-  - Mọi thao tác của nhân viên đều được ghi nhận
+1. Click **Công việc CS** trên sidebar
+2. Chọn view **"CS nội trú"** ở thanh trên
+3. Thấy danh sách bệnh nhân nội trú với các cột:
+   - Tiêu đề công việc
+   - **Bệnh nhân** (click để xem hồ sơ)
+   - **BS phụ trách**
+   - **Phòng khám**
+   - Trạng thái gọi
+   - Hạn chăm sóc
+   - Ghi chú cuộc gọi
+   - Thuốc
+4. Click vào bệnh nhân → xem hồ sơ chi tiết (PID, SĐT, thuốc, ngày vào/xuất viện)
+5. Gọi điện cho bệnh nhân
+6. Quay lại công việc → cập nhật:
+   - **Trạng thái gọi:** Chưa gọi → **Đã gọi** (hoặc Cần gọi lại / Không liên lạc được)
+   - **Ghi chú cuộc gọi:** VD: "BN uống thuốc đều, hẹn tái khám 15/04"
 
-### Thao tác ghi chú sau cuộc gọi
+### So sánh với trước
 
-Sau khi gọi xong, nhân viên thao tác trên **2 nơi**:
-
-**Trên công việc chăm sóc:**
-1. Cập nhật trạng thái gọi (Đã gọi / Cần gọi lại / Không liên lạc được)
-2. Ghi chú nhanh vào trường "Ghi chú cuộc gọi" (VD: "Không nghe máy, gọi lại chiều")
-
-**Trên hồ sơ bệnh nhân (nếu cần ghi chú chi tiết):**
-1. Click vào bệnh nhân liên kết → mở hồ sơ
-2. Click nút **"Tạo ghi chú"** (Note)
-3. Nhập nội dung chi tiết → ghi chú hiển thị trên timeline bệnh nhân, lưu vĩnh viễn
+| Trước (Excel) | Trên CRM |
+|---|---|
+| HIS → xuất Excel → xóa cột → copy → fill thủ công → gọi (6 bước) | Mở view → gọi → ghi chú (2 bước) |
 
 ---
 
-## 10. Tóm tắt so sánh
+## 3. Quy trình chăm sóc CBNM
 
-| Quy trình | Hiện tại | Trên CRM |
-|-----------|----------|----------|
-| Nội trú | 6 bước, ~30 phút chuẩn bị | 2 bước, dữ liệu có sẵn |
-| CBNM | 5 bước, tra cứu IMS thủ công | 2 bước, thuốc/PK tự fill |
-| Thủ thuật | 3 bước, nhập từ Zalo | 3 bước (vẫn nhập thủ công, nhưng tự điền thông tin BN) |
-| Tái khám | 6 bước, đối soát 4-5 file | 2 bước, đối soát tự động + cảnh báo |
-| Beta-thai | 5 bước, kiểm tra chéo nhiều file | 3 bước, đối soát tự động + duyệt trên hệ thống |
-| Thai kỳ | Tự nhớ lịch, nhập thủ công | View tự hiển thị bệnh nhân đến hạn |
-| Báo cáo | Tổng hợp thủ công khi quản lý hỏi | Dashboard real-time |
+**Đối tượng:** Bệnh nhân mới đến khám, cần tư vấn
+
+### Các bước
+
+1. Chọn view **"CS CBNM"**
+2. Thấy danh sách với cột: Bệnh nhân, BS phụ trách, Thuốc, Trạng thái gọi, Ghi chú
+3. Click vào bệnh nhân liên kết → xem thông tin liệu trình, thuốc đang dùng
+4. Gọi chăm sóc → cập nhật trạng thái và ghi chú
+
+> **Lưu ý:** Nếu bệnh nhân hủy chu kỳ, ghi rõ lý do vào trường **"Lý do hủy chu kỳ"** trên hồ sơ bệnh nhân. Task sẽ không cần gọi nữa.
+
+---
+
+## 4. Quy trình nhắc hẹn thủ thuật
+
+**Đối tượng:** Bệnh nhân có lịch thủ thuật (lấy trứng, IUI, chuyển phôi, phẫu thuật...)
+
+### Các bước
+
+1. Khi PHS ban hành lịch thủ thuật (qua Zalo):
+   - Bấm **"+ Bản ghi mới"** trên view **"CS thủ thuật"**
+   - Nhập tiêu đề: VD "Nhắc hẹn - Nguyễn Thị Lan - Lấy trứng 7h30"
+   - Chọn **Loại lịch hẹn:** Lấy trứng / IUI / Chuyển phôi / Phẫu thuật / PRP
+   - Chọn **Hạn chăm sóc** (ngày thủ thuật)
+   - Link với bệnh nhân
+2. Gọi nhắc hẹn → cập nhật trạng thái
+
+> **Lưu ý:** Phần này vẫn cần nhập thủ công vì lịch PHS gửi qua Zalo, không từ hệ thống. Nhưng khi nhập PID, hệ thống hiển thị ngay toàn bộ thông tin bệnh nhân.
+
+---
+
+## 5. Quy trình gọi tái khám
+
+**Đối tượng:** Bệnh nhân có lịch hẹn tái khám
+
+### Các bước
+
+1. Chọn view **"CS tái khám"**
+2. Thấy danh sách với: Bệnh nhân, BS, Thuốc, Trạng thái gọi, Ghi chú, Hạn
+3. Đối soát: kiểm tra thuốc, lời dặn BS có khớp không
+4. Gọi nhắc tái khám → cập nhật trạng thái và ghi chú
+
+### So sánh
+
+| Trước | Trên CRM |
+|---|---|
+| 6 bước đối soát chéo HIT/IMS/sheet IUI/IVF/CBNM | View hiện sẵn, đối soát tự động khi có tích hợp HIS (Phase 3) |
+
+---
+
+## 6. Quy trình chăm sóc beta-thai
+
+**Đối tượng:**
+- **IUI:** bệnh nhân ngày sau bơm IUI
+- **IVF:** bệnh nhân đủ 14 ngày sau chuyển phôi
+
+### Các bước
+
+1. Chọn view **"CS beta-thai"**
+2. Thấy: Bệnh nhân, Loại lịch hẹn (IUI/IVF), Hạn, **Trạng thái duyệt**, Trạng thái gọi
+3. Kiểm tra danh sách → nếu cần duyệt, cập nhật **Trạng thái duyệt** = "Chưa duyệt"
+4. Gửi quản lý xem → quản lý đổi thành **"Đã duyệt"** hoặc **"Từ chối"**
+5. Sau khi được duyệt → gọi bệnh nhân
+6. Nhập kết quả beta vào hồ sơ bệnh nhân (trường **Kết quả Beta**)
+7. Nếu beta dương tính:
+   - Cập nhật **Giai đoạn điều trị** → **"Thai kỳ"**
+   - Nhập **Tuần thai** và **Ngày dự sinh**
+   - Bệnh nhân sẽ tự xuất hiện trong view "CS thai kỳ"
+
+> **Trường hợp sảy/lưu:** Cập nhật Giai đoạn → **"Sảy thai"** hoặc **"Lưu thai"**. Bệnh nhân sẽ không hiện trong view thai kỳ nữa.
+
+---
+
+## 7. Quy trình chăm sóc thai kỳ
+
+**Đối tượng:** Bệnh nhân mang thai (beta đậu), chăm sóc mỗi tháng 1 lần
+
+### Các bước
+
+1. Chọn view **"CS thai kỳ"**
+2. Thấy: Bệnh nhân, Hạn, Thuốc, Trạng thái gọi, Ghi chú
+3. Gọi hỏi thăm → ghi chú kết quả (siêu âm, tình trạng thai, thuốc bổ sung)
+4. Cập nhật trạng thái → **"Đã gọi"**
+5. Tạo công việc mới cho lần gọi tháng sau (hoặc workflow tự tạo khi activate)
+
+> **Cập nhật tuần thai:** Mỗi lần gọi, vào hồ sơ bệnh nhân cập nhật **Tuần thai** cho chính xác.
+
+---
+
+## 8. Kanban — Theo dõi trạng thái tổng quan
+
+Chọn view **"CS theo trạng thái"** để xem Kanban:
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐
+│  Chưa gọi    │  │   Đã gọi     │  │ Cần gọi lại  │  │ Không liên lạc   │
+│              │  │              │  │              │  │     được         │
+│  ▪ Lan - NT  │  │  ▪ Mai - TK  │  │  ▪ Hoa - BT  │  │  ▪ Minh - CBNM   │
+│  ▪ Thanh - TT│  │  ▪ Hong - TK │  │              │  │                  │
+│  ▪ Ngoc - BT │  │  ▪ Yen - NT  │  │              │  │                  │
+│  ...         │  │  ...         │  │              │  │                  │
+└──────────────┘  └──────────────┘  └──────────────┘  └──────────────────┘
+```
+
+**Cách dùng:**
+- Kéo thả task từ cột "Chưa gọi" sang "Đã gọi" sau khi gọi xong
+- Cuối ngày: cột "Chưa gọi" phải còn ít nhất có thể
+- Cột "Không liên lạc được" → chuyển sang ngày mai
+
+---
+
+## 9. Ghi chú và timeline bệnh nhân
+
+### Ghi chú nhanh (trên công việc CS)
+
+Sau mỗi cuộc gọi, ghi vào trường **"Ghi chú cuộc gọi"** trên công việc:
+- "BN uống thuốc đều, hẹn tái khám 15/04"
+- "Không nghe máy, gọi lại chiều"
+- "BN hỏi về kết quả XN, chuyển BS tư vấn"
+
+### Ghi chú chi tiết (trên hồ sơ bệnh nhân)
+
+Khi cần ghi kết quả xét nghiệm, siêu âm, tư vấn chi tiết:
+
+1. Mở hồ sơ bệnh nhân (click tên BN trên công việc)
+2. Click **"Ghi chú"** trên sidebar → **"+ Thêm mới"**
+3. Nhập tiêu đề: VD "Kết quả siêu âm tuần 20"
+4. Nhập nội dung: "Thai phát triển bình thường, cân nặng 350g..."
+5. Ghi chú hiện trên **timeline** bệnh nhân — lưu vĩnh viễn
+
+---
+
+## 10. Dashboard báo cáo
+
+**Dành cho:** Trưởng phòng CSKH, quản lý
+
+### Xem báo cáo
+
+1. Click **Báo cáo** trên sidebar
+2. Click vào **"Báo cáo CSKH"**
+
+### 8 biểu đồ:
+
+| Biểu đồ | Ý nghĩa |
+|----------|---------|
+| **Tổng bệnh nhân** | Số BN trong hệ thống |
+| **Tổng công việc CS** | Tổng task đã tạo |
+| **Chưa gọi** | Số task chưa xử lý |
+| **Công việc theo loại chăm sóc** | Phân bổ: Nội trú / CBNM / Thủ thuật / Tái khám / Beta / Thai kỳ |
+| **Trạng thái cuộc gọi** | Đã gọi / Chưa gọi / Cần gọi lại / Không liên lạc |
+| **BN theo giai đoạn điều trị** | IVF / IUI / Thai kỳ / Hoàn thành / Sảy-Lưu |
+| **Công việc CS theo thời gian** | Xu hướng theo tuần — tăng hay giảm |
+| **Khối lượng CS theo nhân viên** | Ai gọi bao nhiêu — cân bằng khối lượng |
+
+---
+
+## Các thao tác thường dùng
+
+| Thao tác | Cách làm |
+|----------|----------|
+| Tìm bệnh nhân | Bấm **Ctrl+K** → nhập PID hoặc tên |
+| Tạo công việc CS mới | Click **"+ Bản ghi mới"** trên view |
+| Cập nhật trạng thái gọi | Click vào task → đổi trường "Trạng thái gọi" |
+| Xem hồ sơ BN từ task | Click tên BN trong cột "Bệnh nhân" |
+| Tạo ghi chú chi tiết | Mở hồ sơ BN → Ghi chú → + Thêm mới |
+| Xem Kanban | Chọn view "CS theo trạng thái" |
+| Xem báo cáo | Sidebar → Báo cáo → Báo cáo CSKH |
+| Lọc theo ngày | Bấm "Lọc" → chọn "Hạn chăm sóc" → chọn ngày |
+| Sắp xếp theo hạn | Bấm "Sắp xếp" → "Hạn chăm sóc" → Tăng dần |
+
+---
+
+## Quy ước trạng thái
+
+### Trạng thái gọi (trên công việc CS)
+
+| Trạng thái | Khi nào dùng | Màu |
+|---|---|---|
+| **Chưa gọi** | Mới tạo, chưa xử lý | Xanh nhạt |
+| **Đã gọi** | Đã gọi và liên lạc được | Xanh lá |
+| **Cần gọi lại** | BN bận, hẹn gọi lại sau | Cam |
+| **Không liên lạc được** | Gọi 3 lần không nghe | Đỏ |
+
+### Giai đoạn điều trị (trên hồ sơ bệnh nhân)
+
+| Giai đoạn | Ý nghĩa |
+|---|---|
+| **Tư vấn** | BN mới, đang tư vấn |
+| **IVF** | Đang điều trị IVF |
+| **IUI** | Đang điều trị IUI |
+| **Thai kỳ** | Beta đậu, đang mang thai |
+| **Hoàn thành** | Điều trị xong, không cần CS nữa |
+| **Sảy thai** | Ca sảy — ngừng CS thai kỳ |
+| **Lưu thai** | Ca lưu — ngừng CS thai kỳ |
+
+### Trạng thái duyệt (trên CS beta-thai)
+
+| Trạng thái | Khi nào dùng |
+|---|---|
+| **Chưa duyệt** | NV lập danh sách, chờ quản lý duyệt |
+| **Đã duyệt** | Quản lý đã kiểm tra, cho phép gọi |
+| **Từ chối** | Quản lý không đồng ý, cần xem lại |
+
+---
+
+## Hỗ trợ kỹ thuật
+
+Nếu gặp sự cố hoặc cần hỗ trợ, liên hệ:
+- **FixPartner:** Qua Zalo nhóm hỗ trợ (đã được mời)
+- **Giờ hỗ trợ:** 8h–18h, thứ 2–thứ 6
