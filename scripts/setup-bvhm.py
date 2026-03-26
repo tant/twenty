@@ -56,11 +56,22 @@ PERSON_FIELDS = [
     {"name": "cancelReason", "label": "Lý do hủy chu kỳ", "type": "TEXT", "icon": "IconAlertTriangle"},
     {"name": "clinicRoom", "label": "Phòng khám", "type": "TEXT", "icon": "IconBuilding"},
     {"name": "doctorName", "label": "BS phụ trách", "type": "TEXT", "icon": "IconStethoscope"},
+    {"name": "bhyt", "label": "Số BHYT", "type": "TEXT", "icon": "IconShieldCheck"},
+    {"name": "nhomMau", "label": "Nhóm máu", "type": "SELECT", "icon": "IconDroplet",
+     "options": [{"label": "A", "value": "A", "position": 0, "color": "red"},
+                 {"label": "B", "value": "B", "position": 1, "color": "blue"},
+                 {"label": "AB", "value": "AB", "position": 2, "color": "purple"},
+                 {"label": "O", "value": "O", "position": 3, "color": "green"}]},
+    {"name": "ngayDuSinh", "label": "Ngày dự sinh", "type": "DATE", "icon": "IconBabyCarriage"},
+    {"name": "tuanThai", "label": "Tuần thai", "type": "NUMBER", "icon": "IconMoodKid"},
     {"name": "treatmentStage", "label": "Giai đoạn điều trị", "type": "SELECT", "icon": "IconProgress",
-     "options": [{"label": "IVF", "value": "IVF", "position": 0, "color": "purple"},
-                 {"label": "IUI", "value": "IUI", "position": 1, "color": "blue"},
-                 {"label": "Thai kỳ", "value": "THAI_KY", "position": 2, "color": "green"},
-                 {"label": "Hoàn thành", "value": "HOAN_THANH", "position": 3, "color": "turquoise"}]},
+     "options": [{"label": "Tư vấn", "value": "TU_VAN", "position": 0, "color": "sky"},
+                 {"label": "IVF", "value": "IVF", "position": 1, "color": "purple"},
+                 {"label": "IUI", "value": "IUI", "position": 2, "color": "blue"},
+                 {"label": "Thai kỳ", "value": "THAI_KY", "position": 3, "color": "green"},
+                 {"label": "Hoàn thành", "value": "HOAN_THANH", "position": 4, "color": "turquoise"},
+                 {"label": "Sảy thai", "value": "SAY_THAI", "position": 5, "color": "red"},
+                 {"label": "Lưu thai", "value": "LUU_THAI", "position": 6, "color": "orange"}]},
 ]
 
 TASK_FIELDS = [
@@ -102,17 +113,17 @@ TASK_FIELDS = [
 # View definitions: (name, icon, type, filter_value, columns[(fieldName, size)])
 CS_VIEWS = [
     ("CS nội trú", "IconBuildingHospital", "TABLE", "NOI_TRU",
-     [("title", 220), ("taskTargets", 180), ("callStatus", 130), ("dueAt", 120), ("callNote", 200), ("medication", 150)]),
+     [("title", 220), ("taskTargets", 180), ("doctorName", 120), ("clinicRoom", 100), ("callStatus", 130), ("dueAt", 120), ("callNote", 200), ("medication", 150)]),
     ("CS CBNM", "IconStethoscope", "TABLE", "CBNM",
      [("title", 220), ("taskTargets", 180), ("doctorName", 120), ("medication", 150), ("callStatus", 130), ("callNote", 200)]),
     ("CS thủ thuật", "IconNeedle", "TABLE", "THU_THUAT",
-     [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("callStatus", 130), ("callNote", 200)]),
+     [("title", 220), ("taskTargets", 180), ("appointmentType", 120), ("dueAt", 120), ("callStatus", 130), ("callNote", 200)]),
     ("CS tái khám", "IconCalendar", "TABLE", "TAI_KHAM",
      [("title", 220), ("taskTargets", 180), ("doctorName", 120), ("medication", 150), ("callStatus", 130), ("callNote", 200), ("dueAt", 120)]),
     ("CS beta-thai", "IconHeartbeat", "TABLE", "BETA_THAI",
-     [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("approvalStatus", 120), ("callStatus", 130), ("callNote", 200)]),
+     [("title", 220), ("taskTargets", 180), ("appointmentType", 100), ("dueAt", 120), ("approvalStatus", 120), ("callStatus", 130), ("callNote", 200)]),
     ("CS thai kỳ", "IconMoodKid", "TABLE", "THAI_KY",
-     [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("callStatus", 130), ("callNote", 200)]),
+     [("title", 220), ("taskTargets", 180), ("dueAt", 120), ("medication", 130), ("callStatus", 130), ("callNote", 200)]),
     ("CS theo trạng thái", "IconLayoutKanban", "KANBAN", None, []),
 ]
 
@@ -249,7 +260,8 @@ _MEDICATIONS = [None, None, "Progesterone 400mg x2/ngày", "Clomiphene 50mg", "A
 _CYCLE_TYPES = ["IVF", "IVF", "IUI", "IUI", "IUI", "CBNM", "PRP"]  # weighted
 _STAY_TYPES = ["HTSS", "HTSS", "HTSS", "PT_TT", "SAN"]
 _PROCEDURE_TYPES = ["OR", "ET", "FET", "C_SECTION", "KHAC"]
-_STAGES = ["IVF", "IUI", "THAI_KY", "HOAN_THANH", None, None]  # some unassigned
+_STAGES = ["TU_VAN", "IVF", "IVF", "IUI", "IUI", "THAI_KY", "THAI_KY", "HOAN_THANH", "SAY_THAI", None]
+_BLOOD_TYPES = ["A", "B", "AB", "O", None, None]
 _TASK_TITLES = {
     "NOI_TRU": ["CS nội trú - {name} - xuất viện sau {proc}", "CS nội trú - {name} - theo dõi sau mổ"],
     "CBNM": ["CS CBNM - {name} - bệnh nhân mới", "CS CBNM - {name} - tư vấn điều trị"],
@@ -289,7 +301,8 @@ def generate_demo_data():
         last = random.choice([ln for ln in _LAST_NAMES if ("Thị" in ln) == is_female])
         email = f"{first.lower()}.{last.lower().replace(' ', '')}.{i}@example.com"
         stage = random.choice(_STAGES)
-        patients.append({
+        blood = random.choice(_BLOOD_TYPES)
+        p_data = {
             "name": {"firstName": first, "lastName": last},
             "emails": {"primaryEmail": email},
             "phones": {"primaryPhoneNumber": _rand_phone(), "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
@@ -298,7 +311,16 @@ def generate_demo_data():
             "companyName": random.choice(_COMPANIES),
             "treatmentStage": stage,
             "_email": email,
-        })
+        }
+        if blood:
+            p_data["nhomMau"] = blood
+        if is_female and random.random() < 0.3:
+            p_data["bhyt"] = f"HS4{random.randint(10000000, 99999999)}"
+        if stage == "THAI_KY":
+            p_data["tuanThai"] = random.randint(6, 36)
+            due = today + timedelta(days=random.randint(30, 200))
+            p_data["ngayDuSinh"] = _date_str(due)
+        patients.append(p_data)
 
     # --- 250 tasks (spread over 90 days, ~3/day recent, more past) ---
     tasks = []
@@ -842,8 +864,9 @@ def seed_demo_data(api: TwentyAPI):
         cid = company_map.get(p["companyName"])
         if cid:
             data["companyId"] = cid
-        if p.get("treatmentStage"):
-            data["treatmentStage"] = p["treatmentStage"]
+        for extra in ("treatmentStage", "nhomMau", "bhyt", "tuanThai", "ngayDuSinh"):
+            if p.get(extra):
+                data[extra] = p[extra]
         try:
             result = api.rest("POST", "people", data)
             pid = result.get("data", {}).get("createPerson", {}).get("id") or result.get("id")
@@ -1090,6 +1113,45 @@ def create_dashboard(api: TwentyAPI):
                 "displayDataLabel": True,
                 "displayLegend": True,
                 "showCenterMetric": True,
+            },
+        })
+
+    # Công việc CS theo thời gian (line chart)
+    if due_at_field:
+        widgets.append({
+            "title": "Công việc CS theo thời gian",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 8, "column": 6, "rowSpan": 6, "columnSpan": 6},
+            "configuration": {
+                "configurationType": "LINE_CHART",
+                "aggregateFieldMetadataId": task_id_field,
+                "aggregateOperation": "COUNT",
+                "primaryAxisGroupByFieldMetadataId": due_at_field,
+                "primaryAxisDateGranularity": "WEEK",
+                "displayDataLabel": False,
+                "displayLegend": False,
+                "isCumulative": False,
+            },
+        })
+
+    # Công việc theo nhân viên (bar chart by createdBy)
+    created_by_field = task_fields.get("createdBy")
+    if created_by_field:
+        widgets.append({
+            "title": "Khối lượng CS theo nhân viên",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 14, "column": 0, "rowSpan": 6, "columnSpan": 12},
+            "configuration": {
+                "configurationType": "BAR_CHART",
+                "aggregateFieldMetadataId": task_id_field,
+                "aggregateOperation": "COUNT",
+                "primaryAxisGroupByFieldMetadataId": created_by_field,
+                "primaryAxisGroupBySubFieldName": "name",
+                "layout": "VERTICAL",
+                "displayDataLabel": True,
+                "displayLegend": False,
             },
         })
 
