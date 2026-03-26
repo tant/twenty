@@ -381,24 +381,31 @@ class TwentyAPI:
 # =============================================================================
 
 def cleanup_defaults(api: TwentyAPI):
-    """Delete upstream demo companies and people."""
-    print("\n2. Cleaning up default demo data...")
+    """Delete ALL existing companies, people, opportunities, tasks, notes."""
+    print("\n2. Cleaning up all existing data...")
 
-    for obj_name in ("companies", "people", "opportunities"):
-        try:
-            resp = api.rest("GET", f"{obj_name}?limit=60")
-            records = resp.get("data", {}).get(obj_name, [])
-            if records:
+    for obj_name in ("taskTargets", "noteTargets", "tasks", "notes", "opportunities", "people", "companies"):
+        total = 0
+        while True:
+            try:
+                resp = api.rest("GET", f"{obj_name}?limit=60")
+                records = resp.get("data", {}).get(obj_name, [])
+                if not records:
+                    break
                 for r in records:
                     try:
                         api.rest("DELETE", f"{obj_name}/{r['id']}")
+                        total += 1
                     except Exception:
                         pass
-                print(f"   Deleted {len(records)} default {obj_name}")
-            else:
-                print(f"   No {obj_name} to delete")
-        except Exception as e:
-            print(f"   {obj_name} cleanup: {e}")
+                if len(records) < 60:
+                    break
+            except Exception:
+                break
+        if total:
+            print(f"   Deleted {total} {obj_name}")
+        else:
+            print(f"   No {obj_name} to delete")
 
 
 def deactivate_opportunity(api: TwentyAPI):
@@ -416,16 +423,23 @@ def cleanup_navigation(api: TwentyAPI):
     """Remove unwanted navigation menu items."""
     print("\n4. Cleaning up navigation...")
     hide_objects = {"opportunity", "workflowRun", "workflowVersion"}
+    removed = 0
     try:
         obj_map = api.get_object_name_map()
         items = api.get_nav_items()
         for item in items:
             obj_name = obj_map.get(item.get("targetObjectMetadataId"), "")
             if obj_name in hide_objects:
-                api.delete_nav_item(item["id"])
-                print(f"   Removed: {obj_name}")
+                try:
+                    api.delete_nav_item(item["id"])
+                    removed += 1
+                    print(f"   Removed: {obj_name}")
+                except Exception as e:
+                    print(f"   Failed to remove {obj_name}: {e}")
     except Exception as e:
         print(f"   Navigation cleanup: {e}")
+    if not removed:
+        print("   No items to remove")
 
 
 def create_custom_fields(api: TwentyAPI):
