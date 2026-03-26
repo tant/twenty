@@ -80,7 +80,7 @@ Trưởng phòng xem Kanban
 
 **Mô tả:** Mỗi bệnh nhân là một record Person với đầy đủ thông tin y tế.
 
-**21 custom fields:**
+**22 custom fields:**
 
 | Nhóm | Field | Loại | Mục đích |
 |------|-------|------|----------|
@@ -90,11 +90,12 @@ Trưởng phòng xem Kanban
 | | Giới tính | SELECT | Nam/Nữ |
 | | CCCD | TEXT | Xác minh danh tính |
 | **Nguồn BN** | Nguồn | SELECT | Marketing/BV/BS hợp tác/Khác |
-| | Đối tác | TEXT | Tên đối tác giới thiệu |
+| | Đối tác giới thiệu | TEXT | Tên đối tác |
 | **Y khoa** | Chẩn đoán | TEXT | Chẩn đoán chính |
 | | Thuốc đang dùng | TEXT | Từ IMS |
 | | Chu kỳ hiện tại | TEXT | VD: "IVF lần 2" |
 | | Kết quả Beta | TEXT | Số liệu beta HCG |
+| | Giai đoạn điều trị | SELECT | IVF/IUI/Thai kỳ/Hoàn thành |
 | **Điều trị** | Ngày bơm IUI | DATETIME | Lịch thủ thuật |
 | | Ngày chuyển phôi | DATETIME | Lịch ET |
 | | Lý do hủy | TEXT | Nếu hủy chu kỳ |
@@ -196,7 +197,7 @@ Trưởng phòng xem Kanban
 
 **Mô tả:** Chỉ hiện menu liên quan đến bệnh viện.
 
-**Hiện:** Companies, People, Tasks, Notes, Dashboards, Workflows
+**Hiện:** Các Khoa, Bệnh nhân, Công việc CS, Ghi chú, Báo cáo, Workflows, Chu kỳ điều trị, Lần nhập viện
 **Ẩn:** Opportunities, Workflow Runs, Workflow Versions
 
 **Acceptance Criteria:**
@@ -205,37 +206,35 @@ Trưởng phòng xem Kanban
 
 ---
 
-## 5. Tính năng — Phase 2 (Nâng cao)
+## 5. Tính năng — Phase 2 (Nâng cao) ✅ DONE
 
-### 5.1 Workflows tự động (Ưu tiên cao)
+### 5.1 Workflows tự động ✅
 
-| # | Workflow | Trigger | Action | Giá trị |
-|---|---------|---------|--------|---------|
-| 1 | Thai Kỳ Auto-Create | BN cập nhật → giai đoạn thai kỳ | Tự tạo task CS thai kỳ | Không sót BN mang thai |
-| 2 | Thai Kỳ Recurring | Task thai kỳ "Đã gọi" | Tự tạo task tháng sau | Chuỗi CS không đứt |
-| 3 | Cảnh báo quá hạn | Hàng ngày 8h sáng | Tìm task quá hạn | Trưởng phòng biết ngay |
+| # | Workflow | Status | Ghi chú |
+|---|---------|--------|---------|
+| 1 | Thai Kỳ Auto-Create | Draft | Cấu hình trigger qua UI workflow builder |
+| 2 | Thai Kỳ Recurring | Draft | Cấu hình trigger qua UI workflow builder |
+| 3 | Cảnh báo quá hạn | Draft | Cấu hình trigger qua UI workflow builder |
 
-**Status:** Có thể tạo qua UI workflow builder của Twenty. Cần thêm field `treatmentStage` trên Person.
+**Note:** Workflows tạo ở trạng thái draft. Nhân viên IT/trưởng phòng cấu hình trigger + steps cụ thể qua giao diện visual workflow builder của Twenty.
 
-### 5.2 Custom Objects (Ưu tiên trung bình)
+### 5.2 Custom Objects ✅
 
-| Object | Mô tả | Fields chính |
-|--------|-------|-------------|
-| **Chu kỳ điều trị** (Treatment Cycle) | Theo dõi IUI/IVF cycle | Loại, trạng thái, BS, ngày bắt đầu, ngày thủ thuật, kết quả beta |
-| **Lần nhập viện** (Inpatient Stay) | Theo dõi nội trú | Loại (HTSS/PT/Sản), ngày nhập/xuất, phẫu thuật, hài lòng, quà tặng |
+| Object | Fields | Relation |
+|--------|--------|----------|
+| **Chu kỳ điều trị** | 9 fields: Loại (IUI/IVF/CBNM/PRP), trạng thái, BS, ngày bắt đầu, ngày thủ thuật, ngày beta, kết quả beta, lý do hủy, ghi chú | MANY_TO_ONE → Bệnh nhân |
+| **Lần nhập viện** | 8 fields: Loại (HTSS/PT-TT/Sản), ngày nhập/xuất, loại thủ thuật, BS, phòng, hài lòng, ghi chú | MANY_TO_ONE → Bệnh nhân |
 
-**Status:** Cần tạo qua metadata API (`createOneObject`). Script chưa implement.
+### 5.3 Dashboard "Báo cáo CSKH" ✅
 
-### 5.3 Dashboard & Báo cáo (Ưu tiên cao)
-
-| Báo cáo | Metrics | Dùng cho |
-|---------|---------|----------|
-| **Tổng quan CSKH** | Số task/ngày, tỷ lệ gọi được, task quá hạn | Trưởng phòng |
-| **Theo loại CS** | Phân bổ task theo 6 loại | Lập kế hoạch nhân sự |
-| **Theo BS/PK** | BN theo phòng khám | Đánh giá hiệu quả |
-| **Thai kỳ** | Số BN đang mang thai, tuần thai | Theo dõi outcome |
-
-**Status:** Twenty có Dashboard object. Cần thiết kế widget và kết nối data.
+| Widget | Loại | Dữ liệu |
+|--------|------|---------|
+| Tổng bệnh nhân | KPI | COUNT(person) |
+| Tổng công việc CS | KPI | COUNT(task) |
+| Chưa gọi | KPI | COUNT_EMPTY(callStatus) |
+| Công việc theo loại chăm sóc | Pie chart | GROUP BY careType |
+| Trạng thái cuộc gọi | Bar chart | GROUP BY callStatus |
+| BN theo giai đoạn điều trị | Pie chart | GROUP BY treatmentStage |
 
 ### 5.4 Tích hợp HIS (Ưu tiên thấp — Phase 3)
 
@@ -299,25 +298,30 @@ Trưởng phòng xem Kanban
 
 ## 9. Trạng thái hiện tại
 
-### Done (Phase 1 MVP)
-- [x] 21 custom fields trên Person (Bệnh nhân)
-- [x] 13 custom fields trên Task (Công việc CS)
-- [x] 7 CS views với filter + columns
+### Done — Phase 1 (MVP)
+- [x] 22 custom fields trên Bệnh nhân (bao gồm treatmentStage)
+- [x] 13 custom fields trên Công việc CS
+- [x] 7 CS views với filter + columns (tiếng Việt có dấu)
 - [x] 11 Khoa/PK bệnh viện
-- [x] Ẩn Opportunities, Workflow Runs/Versions
+- [x] Ẩn Opportunities, Workflow Runs/Versions khỏi sidebar
 - [x] Deactivate Opportunity object
-- [x] Demo data: 8 BN, 12 tasks, 8 notes (all linked)
+- [x] Xoá Quick Lead workflow mặc định
 - [x] Script idempotent, chạy từ bất kỳ đâu
-- [x] Deploy trên Dokploy
+- [x] Deploy trên Dokploy (auto-deploy on push)
 
-### Not Done (Phase 2)
-- [ ] 3 Workflows tự động (Thai Kỳ Auto-Create, Recurring, Overdue Alert)
-- [ ] 2 Custom objects (Chu kỳ điều trị, Lần nhập viện)
-- [ ] Dashboard báo cáo CSKH
-- [ ] Đổi tên sidebar sang tiếng Việt (Companies→Khoa, People→Bệnh nhân...)
-- [ ] Field `treatmentStage` trên Person (cần cho workflows)
+### Done — Phase 2 (Nâng cao)
+- [x] Sidebar tiếng Việt: Các Khoa, Bệnh nhân, Công việc CS, Ghi chú, Báo cáo, Quy trình
+- [x] Custom object: Chu kỳ điều trị (9 fields + relation → Bệnh nhân)
+- [x] Custom object: Lần nhập viện (8 fields + relation → Bệnh nhân)
+- [x] Field `treatmentStage` trên Bệnh nhân (IVF/IUI/Thai kỳ/Hoàn thành)
+- [x] 3 Workflows draft: Thai kỳ Auto-Create, Thai kỳ Recurring, Cảnh báo quá hạn
+- [x] Dashboard "Báo cáo CSKH" — 6 widgets (3 KPI + pie chart loại CS + bar chart trạng thái gọi + pie chart giai đoạn điều trị)
+- [x] Demo data 3 tháng: 50 BN, 260 tasks, 60 notes, 35 chu kỳ, 25 lần nhập viện (all linked)
+- [x] Labels tiếng Việt có dấu cho tất cả fields và options
 
-### Not Done (Phase 3)
+### Not Done — Phase 3 (Tương lai)
+- [ ] Activate workflows (cấu hình trigger qua UI workflow builder)
 - [ ] Tích hợp HIS/HIT/IMS
-- [ ] Email/SMS notification
+- [ ] Email/SMS notification tự động
 - [ ] Mobile responsive testing
+- [ ] Thêm widgets dashboard: trend theo thời gian, so sánh theo tháng
