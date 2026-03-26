@@ -368,8 +368,8 @@ class TwentyAPI:
         return r["data"]["navigationMenuItems"]
 
     def get_object_name_map(self) -> dict[str, str]:
-        """Returns {objectMetadataId: nameSingular}"""
-        r = self._gql('query { objects { edges { node { id nameSingular } } } }')
+        """Returns {objectMetadataId: nameSingular} including inactive objects."""
+        r = self._gql('query { objects(paging: { first: 100 }) { edges { node { id nameSingular } } } }')
         return {e["node"]["id"]: e["node"]["nameSingular"] for e in r["data"]["objects"]["edges"]}
 
     def delete_nav_item(self, item_id: str):
