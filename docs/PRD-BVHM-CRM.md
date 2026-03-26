@@ -80,7 +80,7 @@ Trưởng phòng xem Kanban
 
 **Mô tả:** Mỗi bệnh nhân là một record Person với đầy đủ thông tin y tế.
 
-**22 custom fields:**
+**26 custom fields:**
 
 | Nhóm | Field | Loại | Mục đích |
 |------|-------|------|----------|
@@ -106,6 +106,10 @@ Trưởng phòng xem Kanban
 | | SĐT vợ/chồng | TEXT | Liên hệ |
 | **Phân công** | Phòng khám | TEXT | PK phụ trách |
 | | BS phụ trách | TEXT | Bác sĩ chính |
+| **Bảo hiểm** | Số BHYT | TEXT | Số thẻ bảo hiểm y tế |
+| | Nhóm máu | SELECT | A/B/AB/O |
+| **Thai sản** | Ngày dự sinh | DATE | Cho BN mang thai |
+| | Tuần thai | NUMBER | Tuần thai hiện tại |
 
 **Acceptance Criteria:**
 - [x] Tất cả fields hiện trên form chi tiết bệnh nhân
@@ -235,6 +239,8 @@ Trưởng phòng xem Kanban
 | Công việc theo loại chăm sóc | Pie chart | GROUP BY careType |
 | Trạng thái cuộc gọi | Bar chart | GROUP BY callStatus |
 | BN theo giai đoạn điều trị | Pie chart | GROUP BY treatmentStage |
+| Công việc CS theo thời gian | Line chart | GROUP BY dueAt (weekly) |
+| Khối lượng CS theo nhân viên | Bar chart | GROUP BY createdBy.name |
 
 ### 5.4 Tích hợp HIS (Ưu tiên thấp — Phase 3)
 
@@ -299,7 +305,7 @@ Trưởng phòng xem Kanban
 ## 9. Trạng thái hiện tại
 
 ### Done — Phase 1 (MVP)
-- [x] 22 custom fields trên Bệnh nhân (bao gồm treatmentStage)
+- [x] 26 custom fields trên Bệnh nhân (bao gồm treatmentStage, BHYT, nhóm máu, tuần thai, ngày dự sinh)
 - [x] 13 custom fields trên Công việc CS
 - [x] 7 CS views với filter + columns (tiếng Việt có dấu)
 - [x] 11 Khoa/PK bệnh viện
@@ -315,13 +321,12 @@ Trưởng phòng xem Kanban
 - [x] Custom object: Lần nhập viện (8 fields + relation → Bệnh nhân)
 - [x] Field `treatmentStage` trên Bệnh nhân (IVF/IUI/Thai kỳ/Hoàn thành)
 - [x] 3 Workflows draft: Thai kỳ Auto-Create, Thai kỳ Recurring, Cảnh báo quá hạn
-- [x] Dashboard "Báo cáo CSKH" — 6 widgets (3 KPI + pie chart loại CS + bar chart trạng thái gọi + pie chart giai đoạn điều trị)
+- [x] Dashboard "Báo cáo CSKH" — 8 widgets (3 KPI + pie loại CS + bar trạng thái gọi + pie giai đoạn + line theo thời gian + bar theo nhân viên)
 - [x] Demo data 3 tháng: 50 BN, 260 tasks, 60 notes, 35 chu kỳ, 25 lần nhập viện (all linked)
 - [x] Labels tiếng Việt có dấu cho tất cả fields và options
 
 ### Not Done — Phase 3 (Tương lai)
 - [ ] Activate workflows (cấu hình trigger qua UI workflow builder)
-- [ ] Tích hợp HIS/HIT/IMS
+- [ ] Tích hợp HIS/HIT/IMS (đồng bộ bệnh nhân, lịch hẹn, thuốc tự động)
 - [ ] Email/SMS notification tự động
 - [ ] Mobile responsive testing
-- [ ] Thêm widgets dashboard: trend theo thời gian, so sánh theo tháng
