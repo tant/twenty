@@ -226,82 +226,164 @@ BVHM_COMPANIES = [
 # DEMO DATA (only seeded with --level demo)
 # =============================================================================
 
-DEMO_PATIENTS = [
-    {"name": {"firstName": "Lan", "lastName": "Nguyen Thi"}, "emails": {"primaryEmail": "lan.nguyenthi@example.com"},
-     "phones": {"primaryPhoneNumber": "912345678", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "TP Ho Chi Minh", "jobTitle": "IVF", "companyName": "Khoa HTSS"},
-    {"name": {"firstName": "Thanh", "lastName": "Vo Thi"}, "emails": {"primaryEmail": "thanh.vothi@example.com"},
-     "phones": {"primaryPhoneNumber": "967345678", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "Dong Nai", "jobTitle": "IUI", "companyName": "Khoa HTSS"},
-    {"name": {"firstName": "Minh", "lastName": "Tran Van"}, "emails": {"primaryEmail": "minh.tranvan@example.com"},
-     "phones": {"primaryPhoneNumber": "908765432", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "TP Ho Chi Minh", "jobTitle": "Tu van", "companyName": "Khoa Nam khoa"},
-    {"name": {"firstName": "Hung", "lastName": "Nguyen Van"}, "emails": {"primaryEmail": "hung.nguyenvan@example.com"},
-     "phones": {"primaryPhoneNumber": "923456789", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "TP Ho Chi Minh", "jobTitle": "Tu van", "companyName": "Khoa Nam khoa"},
-    {"name": {"firstName": "Hong", "lastName": "Le Thi"}, "emails": {"primaryEmail": "hong.lethi@example.com"},
-     "phones": {"primaryPhoneNumber": "935678901", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "Binh Duong", "jobTitle": "Mang thai", "companyName": "Khoa Phu san"},
-    {"name": {"firstName": "Ngoc", "lastName": "Dang Thi"}, "emails": {"primaryEmail": "ngoc.dangthi@example.com"},
-     "phones": {"primaryPhoneNumber": "956789012", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "Long An", "jobTitle": "Theo doi thai", "companyName": "Khoa Phu san"},
-    {"name": {"firstName": "Yen", "lastName": "Hoang Thi"}, "emails": {"primaryEmail": "yen.hoangthi@example.com"},
-     "phones": {"primaryPhoneNumber": "978901234", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "TP Ho Chi Minh", "jobTitle": "Sau sinh", "companyName": "Khoa Phu san"},
-    {"name": {"firstName": "Mai", "lastName": "Pham Thi"}, "emails": {"primaryEmail": "mai.phamthi@example.com"},
-     "phones": {"primaryPhoneNumber": "945012345", "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
-     "city": "TP Ho Chi Minh", "jobTitle": "Kham", "companyName": "PK BS Ho Cao Cuong"},
-]
-
-DEMO_TASKS = [
-    {"title": "CS noi tru - Lan Nguyen Thi - xuat vien sau ET", "careType": "NOI_TRU", "callStatus": "CHUA_GOI", "medication": "Progesterone 400mg x2/ngay", "daysFromNow": 0, "patientEmail": "lan.nguyenthi@example.com"},
-    {"title": "CS noi tru - Yen Hoang Thi - xuat vien sau sinh", "careType": "NOI_TRU", "callStatus": "DA_GOI", "medication": None, "daysFromNow": -1, "patientEmail": "yen.hoangthi@example.com"},
-    {"title": "CS CBNM - Hung Nguyen Van - benh nhan moi", "careType": "CBNM", "callStatus": "CHUA_GOI", "medication": None, "daysFromNow": 1, "patientEmail": "hung.nguyenvan@example.com"},
-    {"title": "CS CBNM - Minh Tran Van - benh nhan moi", "careType": "CBNM", "callStatus": "KHONG_LIEN_LAC", "callNote": "Goi 3 lan khong nghe may", "medication": None, "daysFromNow": 1, "patientEmail": "minh.tranvan@example.com"},
-    {"title": "Nhac hen thu thuat - Lan - Lay trung ngay mai 7h30", "careType": "THU_THUAT", "callStatus": "DA_GOI", "medication": "Ovitrelle 250mcg tiem 21h", "daysFromNow": 1, "patientEmail": "lan.nguyenthi@example.com"},
-    {"title": "Nhac hen thu thuat - Thanh - Bom IUI ngay mai 9h", "careType": "THU_THUAT", "callStatus": "CHUA_GOI", "medication": "Clomiphene 50mg", "daysFromNow": 1, "patientEmail": "thanh.vothi@example.com"},
-    {"title": "Goi tai kham - Mai - PK2 BS.Ha 10h", "careType": "TAI_KHAM", "callStatus": "CHUA_GOI", "medication": None, "daysFromNow": 2, "patientEmail": "mai.phamthi@example.com"},
-    {"title": "Goi tai kham - Thanh - PK1 BS.Long 14h", "careType": "TAI_KHAM", "callStatus": "CAN_GOI_LAI", "medication": None, "daysFromNow": 2, "patientEmail": "thanh.vothi@example.com"},
-    {"title": "CS beta - Lan - IVF 14 ngay sau chuyen phoi", "careType": "BETA_THAI", "callStatus": "CHUA_GOI", "medication": "Progesterone 400mg x2/ngay", "daysFromNow": 3, "patientEmail": "lan.nguyenthi@example.com"},
-    {"title": "CS beta - Thanh - IUI ngay sau bom", "careType": "BETA_THAI", "callStatus": "DA_GOI", "medication": None, "daysFromNow": -2, "patientEmail": "thanh.vothi@example.com"},
-    {"title": "CS thai ky thang 3 - Hong - Tuan 20", "careType": "THAI_KY", "callStatus": "CHUA_GOI", "medication": "Acid folic 5mg/ngay", "daysFromNow": 5, "patientEmail": "hong.lethi@example.com"},
-    {"title": "CS thai ky thang 3 - Ngoc - Tuan 12", "careType": "THAI_KY", "callStatus": "DA_GOI", "medication": "Acid folic 5mg/ngay", "daysFromNow": -3, "patientEmail": "ngoc.dangthi@example.com"},
-]
-
-DEMO_NOTES = [
-    {"title": "Lan - Ket qua sieu am dau ky", "body": "Sieu am ngay 15/03: Noi mac tu cung 9mm, nang noang trai 18mm. Chi dinh tiem Ovitrelle 21h toi nay, hen lay trung sau 36h.", "patientEmail": "lan.nguyenthi@example.com"},
-    {"title": "Thanh - Ghi chu tu van IUI", "body": "BN duoc tu van quy trinh bom IUI. Lich hen: xet nghiem hormone ngay 3 chu ky, sieu am theo doi nang noang tu ngay 10.", "patientEmail": "thanh.vothi@example.com"},
-    {"title": "Minh - Ket qua tinh dich do", "body": "Mat do: 15 trieu/ml, di dong A+B: 35%. BS khuyen loc rua tinh trung va IUI ho tro. Hen tai kham sau 2 tuan.", "patientEmail": "minh.tranvan@example.com"},
-    {"title": "Hung - Lan kham dau tien", "body": "BN den kham lan dau, than chu: vo chong hiem muon 2 nam. Chi dinh xet nghiem hormone, sieu am, tinh dich do. Hen tra ket qua 1 tuan.", "patientEmail": "hung.nguyenvan@example.com"},
-    {"title": "Hong - Theo doi thai tuan 20", "body": "Sieu am hinh thai hoc: thai phat trien binh thuong, can nang uoc tinh 350g. Khong phat hien bat thuong. Hen tai kham 4 tuan.", "patientEmail": "hong.lethi@example.com"},
-    {"title": "Ngoc - Ket qua Double Test", "body": "Ket qua Double Test: nguy co thap. PAPP-A va free beta-hCG trong gioi han binh thuong. Tiep tuc theo doi thai ky dinh ky.", "patientEmail": "ngoc.dangthi@example.com"},
-    {"title": "Yen - Ghi chu xuat vien sau sinh", "body": "San phu xuat vien ngay 2 sau sinh thuong. Be 3.2kg, bu me tot. Dan do: tai kham sau 1 tuan, theo doi san dich, giu ve sinh.", "patientEmail": "yen.hoangthi@example.com"},
-    {"title": "Mai - Ket qua kham phu khoa", "body": "Kham phu khoa dinh ky: PAP smear binh thuong, sieu am tu cung phan phu khong bat thuong. Hen tai kham sau 6 thang.", "patientEmail": "mai.phamthi@example.com"},
-]
-
 # =============================================================================
-# DEMO: TREATMENT CYCLES (Chu kỳ điều trị)
+# DEMO DATA GENERATOR — 3 months of realistic hospital operation
 # =============================================================================
+import random
 
-DEMO_TREATMENT_CYCLES = [
-    {"cycleType": "IVF", "status": "DANG_DIEU_TRI", "doctor": "BS Hồ Cao Cường", "startDate": "2026-02-01", "procedureDate": "2026-03-15", "patientEmail": "lan.nguyenthi@example.com"},
-    {"cycleType": "IUI", "status": "DANG_DIEU_TRI", "doctor": "BS Lý Thái Lộc", "startDate": "2026-03-01", "procedureDate": "2026-03-20", "patientEmail": "thanh.vothi@example.com"},
-    {"cycleType": "IVF", "status": "HOAN_THANH", "doctor": "BS Hồ Cao Cường", "startDate": "2025-10-01", "procedureDate": "2025-11-15", "betaResult": "hCG 1250 mIU/mL - Dương tính", "patientEmail": "hong.lethi@example.com"},
-    {"cycleType": "IUI", "status": "DA_HUY", "doctor": "BS Minh Tâm", "startDate": "2026-01-15", "cancelReason": "Nang noãn không đáp ứng thuốc", "patientEmail": "ngoc.dangthi@example.com"},
-    {"cycleType": "CBNM", "status": "DANG_DIEU_TRI", "doctor": "BS Lê Huy Bình", "startDate": "2026-03-10", "patientEmail": "minh.tranvan@example.com"},
-    {"cycleType": "IVF", "status": "HOAN_THANH", "doctor": "BS Vũ Minh Ngọc", "startDate": "2025-08-01", "procedureDate": "2025-09-10", "betaResult": "hCG 890 mIU/mL - Dương tính", "patientEmail": "yen.hoangthi@example.com"},
+_FIRST_NAMES_F = ["Lan", "Hoa", "Mai", "Hồng", "Ngọc", "Yến", "Thanh", "Thảo", "Linh", "Trang",
+                  "Hạnh", "Phương", "Vy", "Trâm", "Uyên", "Diệu", "Châu", "Nhung", "Ánh", "Tuyết",
+                  "Huệ", "Cúc", "Thu", "Xuân", "Hiền", "Bích", "Dung", "Quỳnh", "Nga", "Vân"]
+_FIRST_NAMES_M = ["Minh", "Hùng", "Tuấn", "Đức", "Long", "Nam", "Bình", "Phong", "Khoa", "Thắng"]
+_LAST_NAMES = ["Nguyễn Thị", "Trần Thị", "Lê Thị", "Phạm Thị", "Hoàng Thị", "Võ Thị", "Đặng Thị",
+               "Bùi Thị", "Đỗ Thị", "Ngô Thị", "Nguyễn Văn", "Trần Văn", "Lê Văn", "Phạm Văn"]
+_CITIES = ["TP Hồ Chí Minh", "Bình Dương", "Đồng Nai", "Long An", "Tây Ninh", "Bà Rịa - Vũng Tàu", "Cần Thơ"]
+_DOCTORS = ["BS Hồ Cao Cường", "BS Lý Thái Lộc", "BS Lê Huy Bình", "BS Minh Tâm",
+            "BS Vũ Minh Ngọc", "BS Nam Khoa", "BS Nhân Quốc Thư"]
+_COMPANIES = ["Khoa HTSS", "Khoa Phu san", "Khoa Nam khoa", "PK BS Ho Cao Cuong",
+              "PK BS Ly Thai Loc", "PK BS Le Huy Binh", "PK BS Minh Tam"]
+_CARE_TYPES = ["NOI_TRU", "CBNM", "THU_THUAT", "TAI_KHAM", "BETA_THAI", "THAI_KY"]
+_CALL_STATUSES = ["CHUA_GOI", "DA_GOI", "DA_GOI", "DA_GOI", "CAN_GOI_LAI", "KHONG_LIEN_LAC"]  # weighted: 70% đã gọi for past tasks
+_MEDICATIONS = [None, None, "Progesterone 400mg x2/ngày", "Clomiphene 50mg", "Acid folic 5mg/ngày",
+                "Ovitrelle 250mcg", "Duphaston 10mg x2/ngày", "Estradiol 2mg x3/ngày"]
+_CYCLE_TYPES = ["IVF", "IVF", "IUI", "IUI", "IUI", "CBNM", "PRP"]  # weighted
+_STAY_TYPES = ["HTSS", "HTSS", "HTSS", "PT_TT", "SAN"]
+_PROCEDURE_TYPES = ["OR", "ET", "FET", "C_SECTION", "KHAC"]
+_STAGES = ["IVF", "IUI", "THAI_KY", "HOAN_THANH", None, None]  # some unassigned
+_TASK_TITLES = {
+    "NOI_TRU": ["CS nội trú - {name} - xuất viện sau {proc}", "CS nội trú - {name} - theo dõi sau mổ"],
+    "CBNM": ["CS CBNM - {name} - bệnh nhân mới", "CS CBNM - {name} - tư vấn điều trị"],
+    "THU_THUAT": ["Nhắc hẹn thủ thuật - {name} - {proc} ngày mai", "CS thủ thuật - {name} - chuẩn bị {proc}"],
+    "TAI_KHAM": ["Gọi tái khám - {name} - PK {doctor}", "Nhắc lịch tái khám - {name}"],
+    "BETA_THAI": ["CS beta - {name} - {days} ngày sau {proc}", "Theo dõi beta - {name}"],
+    "THAI_KY": ["CS thai kỳ - {name} - Tuần {week}", "Theo dõi thai - {name} - tháng {month}"],
+}
+_NOTE_TEMPLATES = [
+    ("{name} - Kết quả siêu âm", "Siêu âm ngày {date}: Nội mạc tử cung {r}mm, nang noãn {r2}mm. {action}"),
+    ("{name} - Tư vấn điều trị", "BN được tư vấn quy trình {proc}. Lịch hẹn: xét nghiệm hormone, siêu âm theo dõi."),
+    ("{name} - Kết quả xét nghiệm", "Kết quả XN hormone: FSH {r} mIU/mL, AMH {r2} ng/mL. Chỉ định: {action}"),
+    ("{name} - Ghi chú xuất viện", "BN xuất viện ngày {date}. Dặn dò: tái khám sau 1 tuần, uống thuốc đều."),
+    ("{name} - Theo dõi thai kỳ", "Siêu âm thai tuần {week}: Thai phát triển bình thường, cân nặng ước tính {r}g."),
 ]
 
-# =============================================================================
-# DEMO: INPATIENT STAYS (Lần nhập viện)
-# =============================================================================
 
-DEMO_INPATIENT_STAYS = [
-    {"stayType": "HTSS", "admissionDate": "2026-03-14", "dischargeDate": "2026-03-16", "procedureType": "OR", "doctor": "BS Hồ Cao Cường", "room": "201", "satisfaction": "HAI_LONG", "patientEmail": "lan.nguyenthi@example.com"},
-    {"stayType": "SAN", "admissionDate": "2026-03-10", "dischargeDate": "2026-03-12", "procedureType": "C_SECTION", "doctor": "BS Lê Huy Bình", "room": "305", "satisfaction": "HAI_LONG", "patientEmail": "yen.hoangthi@example.com"},
-    {"stayType": "HTSS", "admissionDate": "2026-03-19", "procedureType": "ET", "doctor": "BS Lý Thái Lộc", "room": "203", "satisfaction": "CHUA_KHAO_SAT", "patientEmail": "thanh.vothi@example.com"},
-    {"stayType": "PT_TT", "admissionDate": "2026-02-20", "dischargeDate": "2026-02-21", "procedureType": "OR", "doctor": "BS Minh Tâm", "room": "202", "satisfaction": "HAI_LONG", "patientEmail": "ngoc.dangthi@example.com"},
-]
+def _rand_phone():
+    return f"9{random.randint(10000000, 99999999)}"
+
+
+def _date_str(d):
+    return d.strftime("%Y-%m-%d")
+
+
+def generate_demo_data():
+    """Generate 3 months of realistic hospital data."""
+    random.seed(42)  # reproducible
+    today = datetime.utcnow().date()
+    start = today - timedelta(days=90)
+
+    # --- 50 patients ---
+    patients = []
+    for i in range(50):
+        is_female = i < 40  # 80% nữ (bệnh viện HTSS)
+        first = random.choice(_FIRST_NAMES_F if is_female else _FIRST_NAMES_M)
+        last = random.choice([ln for ln in _LAST_NAMES if ("Thị" in ln) == is_female])
+        email = f"{first.lower()}.{last.lower().replace(' ', '')}.{i}@example.com"
+        stage = random.choice(_STAGES)
+        patients.append({
+            "name": {"firstName": first, "lastName": last},
+            "emails": {"primaryEmail": email},
+            "phones": {"primaryPhoneNumber": _rand_phone(), "primaryPhoneCountryCode": "VN", "primaryPhoneCallingCode": "+84"},
+            "city": random.choice(_CITIES),
+            "jobTitle": random.choice(["IVF", "IUI", "Tư vấn", "Mang thai", "Tái khám", "Khám phụ khoa"]),
+            "companyName": random.choice(_COMPANIES),
+            "treatmentStage": stage,
+            "_email": email,
+        })
+
+    # --- 250 tasks (spread over 90 days, ~3/day recent, more past) ---
+    tasks = []
+    for day_offset in range(-90, 5):
+        d = today + timedelta(days=day_offset)
+        # More tasks per day for recent weeks
+        n_tasks = random.randint(2, 5) if day_offset > -30 else random.randint(1, 3)
+        for _ in range(n_tasks):
+            p = random.choice(patients)
+            care = random.choice(_CARE_TYPES)
+            # Past tasks mostly "đã gọi", future/recent tasks "chưa gọi"
+            if day_offset < -7:
+                status = random.choice(["DA_GOI", "DA_GOI", "DA_GOI", "KHONG_LIEN_LAC"])
+            elif day_offset < 0:
+                status = random.choice(["DA_GOI", "DA_GOI", "CAN_GOI_LAI", "CHUA_GOI"])
+            else:
+                status = random.choice(["CHUA_GOI", "CHUA_GOI", "CHUA_GOI", "DA_GOI"])
+            name = p["name"]["firstName"]
+            title_tpl = random.choice(_TASK_TITLES[care])
+            title = title_tpl.format(name=name, proc=random.choice(["ET", "OR", "IUI", "FET"]),
+                                     doctor=random.choice(_DOCTORS).replace("BS ", ""),
+                                     days=random.randint(7, 21), week=random.randint(8, 36),
+                                     month=random.randint(1, 9))
+            task = {
+                "title": title, "careType": care, "callStatus": status,
+                "medication": random.choice(_MEDICATIONS),
+                "daysFromNow": day_offset, "patientEmail": p["_email"],
+            }
+            if status in ("CAN_GOI_LAI", "KHONG_LIEN_LAC"):
+                task["callNote"] = random.choice(["Gọi 3 lần không nghe máy", "BN bận, hẹn gọi lại chiều",
+                                                   "SĐT sai, cần xác nhận lại", "Gọi lại sau 14h"])
+            tasks.append(task)
+
+    # --- 60 notes ---
+    notes = []
+    for i in range(60):
+        p = random.choice(patients)
+        tpl = random.choice(_NOTE_TEMPLATES)
+        d = start + timedelta(days=random.randint(0, 90))
+        title = tpl[0].format(name=p["name"]["firstName"])
+        body = tpl[1].format(name=p["name"]["firstName"], date=_date_str(d),
+                             r=random.randint(5, 20), r2=random.randint(8, 25),
+                             action=random.choice(["Tiếp tục theo dõi", "Chỉ định IUI", "Chuyển IVF",
+                                                    "Hẹn tái khám 2 tuần", "Siêu âm lại sau 1 tuần"]),
+                             proc=random.choice(["IUI", "IVF", "FET"]),
+                             week=random.randint(8, 36))
+        notes.append({"title": title, "body": body, "patientEmail": p["_email"]})
+
+    # --- 35 treatment cycles ---
+    cycles = []
+    for i in range(35):
+        p = random.choice(patients)
+        d = start + timedelta(days=random.randint(0, 80))
+        ct = random.choice(_CYCLE_TYPES)
+        s = random.choice(["DANG_DIEU_TRI", "DANG_DIEU_TRI", "HOAN_THANH", "DA_HUY"])
+        cycle = {
+            "cycleType": ct, "status": s, "doctor": random.choice(_DOCTORS),
+            "startDate": _date_str(d), "patientEmail": p["_email"],
+        }
+        if ct in ("IVF", "IUI") and s != "DA_HUY":
+            cycle["procedureDate"] = _date_str(d + timedelta(days=random.randint(14, 30)))
+        if s == "HOAN_THANH":
+            cycle["betaResult"] = f"hCG {random.randint(200, 2500)} mIU/mL - {'Dương tính' if random.random() > 0.3 else 'Âm tính'}"
+        if s == "DA_HUY":
+            cycle["cancelReason"] = random.choice(["Nang noãn không đáp ứng", "BN xin hoãn", "Chỉ số hormone không đạt"])
+        cycles.append(cycle)
+
+    # --- 25 inpatient stays ---
+    stays = []
+    for i in range(25):
+        p = random.choice(patients)
+        d = start + timedelta(days=random.randint(0, 85))
+        stay = {
+            "stayType": random.choice(_STAY_TYPES),
+            "admissionDate": _date_str(d),
+            "dischargeDate": _date_str(d + timedelta(days=random.randint(1, 3))),
+            "procedureType": random.choice(_PROCEDURE_TYPES),
+            "doctor": random.choice(_DOCTORS),
+            "room": str(random.randint(101, 310)),
+            "satisfaction": random.choice(["HAI_LONG", "HAI_LONG", "HAI_LONG", "TIEU_CUC", "CHUA_KHAO_SAT"]),
+            "patientEmail": p["_email"],
+        }
+        stays.append(stay)
+
+    return patients, tasks, notes, cycles, stays
 
 # Navigation items to remove (by view name pattern)
 NAV_ITEMS_TO_REMOVE = ["Opportunities", "Workflow Runs", "Workflow Versions"]
@@ -744,50 +826,41 @@ def seed_companies(api: TwentyAPI):
 
 
 def seed_demo_data(api: TwentyAPI):
-    """Seed demo patients, tasks, and notes."""
+    """Seed 3 months of realistic hospital demo data."""
+    patients, tasks_data, notes_data, cycles_data, stays_data = generate_demo_data()
+
     # Build company name -> id map
     companies_resp = api.rest("GET", "companies?limit=50")
     company_map = {c["name"]: c["id"] for c in companies_resp.get("data", {}).get("companies", [])}
 
-    # Seed patients
-    print(f"\n9. Seeding demo patients ({len(DEMO_PATIENTS)})...")
-    patient_map = {}  # email -> id
-    for p in DEMO_PATIENTS:
-        data = {
-            "name": p["name"],
-            "emails": p["emails"],
-            "phones": p["phones"],
-            "city": p["city"],
-            "jobTitle": p["jobTitle"],
-        }
-        company_id = company_map.get(p["companyName"])
-        if company_id:
-            data["companyId"] = company_id
+    # --- Patients ---
+    print(f"\n9. Seeding {len(patients)} demo patients...")
+    patient_map = {}
+    for p in patients:
+        data = {"name": p["name"], "emails": p["emails"], "phones": p["phones"],
+                "city": p["city"], "jobTitle": p["jobTitle"]}
+        cid = company_map.get(p["companyName"])
+        if cid:
+            data["companyId"] = cid
+        if p.get("treatmentStage"):
+            data["treatmentStage"] = p["treatmentStage"]
         try:
             result = api.rest("POST", "people", data)
-            pid = result.get("data", {}).get("createPerson", {}).get("id") or result.get("data", {}).get("person", {}).get("id")
-            if not pid:
-                # Try alternative response format
-                pid = result.get("id")
+            pid = result.get("data", {}).get("createPerson", {}).get("id") or result.get("id")
             if pid:
-                patient_map[p["emails"]["primaryEmail"]] = pid
-        except Exception as e:
-            print(f"   FAIL: {p['name']['firstName']} - {e}")
+                patient_map[p["_email"]] = pid
+        except Exception:
+            pass
     print(f"   Created {len(patient_map)} patients")
 
-    # Seed tasks
-    print(f"\n10. Seeding demo tasks ({len(DEMO_TASKS)})...")
+    # --- Tasks ---
+    print(f"\n10. Seeding {len(tasks_data)} demo tasks...")
     now = datetime.utcnow()
     task_ids = []
-    for t in DEMO_TASKS:
+    for t in tasks_data:
         due = now + timedelta(days=t["daysFromNow"])
-        data = {
-            "title": t["title"],
-            "status": "TODO",
-            "dueAt": due.strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "careType": t["careType"],
-            "callStatus": t["callStatus"],
-        }
+        data = {"title": t["title"], "status": "TODO", "dueAt": due.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "careType": t["careType"], "callStatus": t["callStatus"]}
         if t.get("callNote"):
             data["callNote"] = t["callNote"]
         if t.get("medication"):
@@ -797,78 +870,72 @@ def seed_demo_data(api: TwentyAPI):
             tid = result.get("data", {}).get("createTask", {}).get("id") or result.get("id")
             if tid:
                 task_ids.append((tid, t.get("patientEmail")))
-        except Exception as e:
-            print(f"   FAIL: {t['title'][:40]} - {e}")
+        except Exception:
+            pass
     print(f"   Created {len(task_ids)} tasks")
 
-    # Link tasks to patients via taskTargets
-    print("\n11. Linking tasks to patients...")
-    linked = 0
-    for task_id, patient_email in task_ids:
-        patient_id = patient_map.get(patient_email)
-        if patient_id:
-            try:
-                api.rest("POST", "taskTargets", {"taskId": task_id, "targetPersonId": patient_id})
-                linked += 1
-            except Exception as e:
-                print(f"   Link fail: {e}")
-    print(f"   Linked {linked} task-patient pairs")
+    # --- Link tasks ---
+    print(f"\n11. Linking tasks to patients...")
+    linked = sum(1 for tid, email in task_ids if email in patient_map and
+                 _try_link(api, "taskTargets", {"taskId": tid, "targetPersonId": patient_map[email]}))
+    print(f"   Linked {linked}/{len(task_ids)}")
 
-    # Seed notes
-    print(f"\n12. Seeding demo notes ({len(DEMO_NOTES)})...")
+    # --- Notes ---
+    print(f"\n12. Seeding {len(notes_data)} demo notes...")
     note_ids = []
-    for n in DEMO_NOTES:
+    for n in notes_data:
         try:
             result = api.rest("POST", "notes", {"title": n["title"], "bodyV2": {"markdown": n["body"]}})
             nid = result.get("data", {}).get("createNote", {}).get("id") or result.get("id")
             if nid:
                 note_ids.append((nid, n["patientEmail"]))
-        except Exception as e:
-            print(f"   FAIL: {n['title'][:40]} - {e}")
+        except Exception:
+            pass
     print(f"   Created {len(note_ids)} notes")
 
-    # Link notes to patients
-    print("\n13. Linking notes to patients...")
-    linked = 0
-    for note_id, patient_email in note_ids:
-        patient_id = patient_map.get(patient_email)
-        if patient_id:
-            try:
-                api.rest("POST", "noteTargets", {"noteId": note_id, "targetPersonId": patient_id})
-                linked += 1
-            except Exception as e:
-                print(f"   Link fail: {e}")
-    print(f"   Linked {linked} note-patient pairs")
+    # --- Link notes ---
+    print(f"\n13. Linking notes to patients...")
+    linked = sum(1 for nid, email in note_ids if email in patient_map and
+                 _try_link(api, "noteTargets", {"noteId": nid, "targetPersonId": patient_map[email]}))
+    print(f"   Linked {linked}/{len(note_ids)}")
 
-    # Seed treatment cycles
-    print(f"\n14. Seeding treatment cycles ({len(DEMO_TREATMENT_CYCLES)})...")
-    created_cycles = 0
-    for tc in DEMO_TREATMENT_CYCLES:
-        patient_id = patient_map.get(tc["patientEmail"])
+    # --- Treatment cycles ---
+    print(f"\n14. Seeding {len(cycles_data)} treatment cycles...")
+    created = 0
+    for tc in cycles_data:
+        pid = patient_map.get(tc["patientEmail"])
         data = {k: v for k, v in tc.items() if k != "patientEmail" and v is not None}
-        if patient_id:
-            data["personId"] = patient_id
+        if pid:
+            data["personId"] = pid
         try:
             api.rest("POST", "treatmentCycles", data)
-            created_cycles += 1
-        except Exception as e:
-            print(f"   FAIL: {tc['cycleType']} for {tc['patientEmail']}: {e}")
-    print(f"   Created {created_cycles} treatment cycles")
+            created += 1
+        except Exception:
+            pass
+    print(f"   Created {created} treatment cycles")
 
-    # Seed inpatient stays
-    print(f"\n15. Seeding inpatient stays ({len(DEMO_INPATIENT_STAYS)})...")
-    created_stays = 0
-    for stay in DEMO_INPATIENT_STAYS:
-        patient_id = patient_map.get(stay["patientEmail"])
+    # --- Inpatient stays ---
+    print(f"\n15. Seeding {len(stays_data)} inpatient stays...")
+    created = 0
+    for stay in stays_data:
+        pid = patient_map.get(stay["patientEmail"])
         data = {k: v for k, v in stay.items() if k != "patientEmail" and v is not None}
-        if patient_id:
-            data["personId"] = patient_id
+        if pid:
+            data["personId"] = pid
         try:
             api.rest("POST", "inpatientStays", data)
-            created_stays += 1
-        except Exception as e:
-            print(f"   FAIL: {stay['stayType']} for {stay['patientEmail']}: {e}")
-    print(f"   Created {created_stays} inpatient stays")
+            created += 1
+        except Exception:
+            pass
+    print(f"   Created {created} inpatient stays")
+
+
+def _try_link(api, endpoint, data):
+    try:
+        api.rest("POST", endpoint, data)
+        return True
+    except Exception:
+        return False
 
 
 def create_dashboard(api: TwentyAPI):
