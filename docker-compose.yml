@@ -1,0 +1,93 @@
+services:
+  crm-app:
+    build:
+      context: .
+      dockerfile: packages/twenty-docker/twenty/Dockerfile
+      target: twenty
+      args:
+        REACT_APP_SERVER_BASE_URL: ${SERVER_URL:-https://bvhmsg.fixpartner.co}
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    environment:
+      NODE_PORT: "3000"
+      PG_DATABASE_URL: postgres://postgres:${PG_DATABASE_PASSWORD}@crm-db:5432/default
+      SERVER_URL: ${SERVER_URL:-https://bvhmsg.fixpartner.co}
+      REDIS_URL: redis://crm-redis:6379
+      STORAGE_TYPE: local
+      APP_SECRET: ${APP_SECRET}
+      TELEMETRY_ENABLED: "false"
+      ANALYTICS_ENABLED: "false"
+    depends_on:
+      crm-db:
+        condition: service_healthy
+      crm-redis:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthz
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: always
+    networks:
+      - dokploy-network
+      - default
+
+  crm-worker:
+    build:
+      context: .
+      dockerfile: packages/twenty-docker/twenty/Dockerfile
+      target: twenty
+      args:
+        REACT_APP_SERVER_BASE_URL: ${SERVER_URL:-https://bvhmsg.fixpartner.co}
+    volumes:
+      - server-local-data:/app/packages/twenty-server/.local-storage
+    command: ["yarn", "worker:prod"]
+    environment:
+      PG_DATABASE_URL: postgres://postgres:${PG_DATABASE_PASSWORD}@crm-db:5432/default
+      SERVER_URL: ${SERVER_URL:-https://bvhmsg.fixpartner.co}
+      REDIS_URL: redis://crm-redis:6379
+      DISABLE_DB_MIGRATIONS: "true"
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+      STORAGE_TYPE: local
+      APP_SECRET: ${APP_SECRET}
+      TELEMETRY_ENABLED: "false"
+      ANALYTICS_ENABLED: "false"
+    depends_on:
+      crm-db:
+        condition: service_healthy
+      crm-app:
+        condition: service_healthy
+    restart: always
+
+  crm-db:
+    image: postgres:16
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD}
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: pg_isready -U postgres -h localhost -d postgres
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  crm-redis:
+    image: redis
+    restart: always
+    command: ["--maxmemory-policy", "noeviction"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
+  server-local-data:
+
+networks:
+  dokploy-network:
+    external: true
