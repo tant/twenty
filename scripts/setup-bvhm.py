@@ -279,6 +279,30 @@ DEMO_NOTES = [
     {"title": "Mai - Ket qua kham phu khoa", "body": "Kham phu khoa dinh ky: PAP smear binh thuong, sieu am tu cung phan phu khong bat thuong. Hen tai kham sau 6 thang.", "patientEmail": "mai.phamthi@example.com"},
 ]
 
+# =============================================================================
+# DEMO: TREATMENT CYCLES (Chu kỳ điều trị)
+# =============================================================================
+
+DEMO_TREATMENT_CYCLES = [
+    {"cycleType": "IVF", "status": "DANG_DIEU_TRI", "doctor": "BS Hồ Cao Cường", "startDate": "2026-02-01", "procedureDate": "2026-03-15", "patientEmail": "lan.nguyenthi@example.com"},
+    {"cycleType": "IUI", "status": "DANG_DIEU_TRI", "doctor": "BS Lý Thái Lộc", "startDate": "2026-03-01", "procedureDate": "2026-03-20", "patientEmail": "thanh.vothi@example.com"},
+    {"cycleType": "IVF", "status": "HOAN_THANH", "doctor": "BS Hồ Cao Cường", "startDate": "2025-10-01", "procedureDate": "2025-11-15", "betaResult": "hCG 1250 mIU/mL - Dương tính", "patientEmail": "hong.lethi@example.com"},
+    {"cycleType": "IUI", "status": "DA_HUY", "doctor": "BS Minh Tâm", "startDate": "2026-01-15", "cancelReason": "Nang noãn không đáp ứng thuốc", "patientEmail": "ngoc.dangthi@example.com"},
+    {"cycleType": "CBNM", "status": "DANG_DIEU_TRI", "doctor": "BS Lê Huy Bình", "startDate": "2026-03-10", "patientEmail": "minh.tranvan@example.com"},
+    {"cycleType": "IVF", "status": "HOAN_THANH", "doctor": "BS Vũ Minh Ngọc", "startDate": "2025-08-01", "procedureDate": "2025-09-10", "betaResult": "hCG 890 mIU/mL - Dương tính", "patientEmail": "yen.hoangthi@example.com"},
+]
+
+# =============================================================================
+# DEMO: INPATIENT STAYS (Lần nhập viện)
+# =============================================================================
+
+DEMO_INPATIENT_STAYS = [
+    {"stayType": "HTSS", "admissionDate": "2026-03-14", "dischargeDate": "2026-03-16", "procedureType": "OR", "doctor": "BS Hồ Cao Cường", "room": "201", "satisfaction": "HAI_LONG", "patientEmail": "lan.nguyenthi@example.com"},
+    {"stayType": "SAN", "admissionDate": "2026-03-10", "dischargeDate": "2026-03-12", "procedureType": "C_SECTION", "doctor": "BS Lê Huy Bình", "room": "305", "satisfaction": "HAI_LONG", "patientEmail": "yen.hoangthi@example.com"},
+    {"stayType": "HTSS", "admissionDate": "2026-03-19", "procedureType": "ET", "doctor": "BS Lý Thái Lộc", "room": "203", "satisfaction": "CHUA_KHAO_SAT", "patientEmail": "thanh.vothi@example.com"},
+    {"stayType": "PT_TT", "admissionDate": "2026-02-20", "dischargeDate": "2026-02-21", "procedureType": "OR", "doctor": "BS Minh Tâm", "room": "202", "satisfaction": "HAI_LONG", "patientEmail": "ngoc.dangthi@example.com"},
+]
+
 # Navigation items to remove (by view name pattern)
 NAV_ITEMS_TO_REMOVE = ["Opportunities", "Workflow Runs", "Workflow Versions"]
 
@@ -466,7 +490,7 @@ def cleanup_defaults(api: TwentyAPI):
     """Delete ALL existing companies, people, opportunities, tasks, notes."""
     print("\n2. Cleaning up all existing data...")
 
-    for obj_name in ("taskTargets", "noteTargets", "tasks", "notes", "opportunities", "people", "companies"):
+    for obj_name in ("taskTargets", "noteTargets", "tasks", "notes", "treatmentCycles", "inpatientStays", "opportunities", "people", "companies"):
         total = 0
         while True:
             try:
@@ -816,6 +840,219 @@ def seed_demo_data(api: TwentyAPI):
                 print(f"   Link fail: {e}")
     print(f"   Linked {linked} note-patient pairs")
 
+    # Seed treatment cycles
+    print(f"\n14. Seeding treatment cycles ({len(DEMO_TREATMENT_CYCLES)})...")
+    created_cycles = 0
+    for tc in DEMO_TREATMENT_CYCLES:
+        patient_id = patient_map.get(tc["patientEmail"])
+        data = {k: v for k, v in tc.items() if k != "patientEmail" and v is not None}
+        if patient_id:
+            data["personId"] = patient_id
+        try:
+            api.rest("POST", "treatmentCycles", data)
+            created_cycles += 1
+        except Exception as e:
+            print(f"   FAIL: {tc['cycleType']} for {tc['patientEmail']}: {e}")
+    print(f"   Created {created_cycles} treatment cycles")
+
+    # Seed inpatient stays
+    print(f"\n15. Seeding inpatient stays ({len(DEMO_INPATIENT_STAYS)})...")
+    created_stays = 0
+    for stay in DEMO_INPATIENT_STAYS:
+        patient_id = patient_map.get(stay["patientEmail"])
+        data = {k: v for k, v in stay.items() if k != "patientEmail" and v is not None}
+        if patient_id:
+            data["personId"] = patient_id
+        try:
+            api.rest("POST", "inpatientStays", data)
+            created_stays += 1
+        except Exception as e:
+            print(f"   FAIL: {stay['stayType']} for {stay['patientEmail']}: {e}")
+    print(f"   Created {created_stays} inpatient stays")
+
+
+def create_dashboard(api: TwentyAPI):
+    """Create BVHM CSKH Dashboard with charts."""
+    print("\n16. Creating BVHM Dashboard...")
+
+    # Get field IDs we need for charts
+    task_obj_id = api.get_object_id("task")
+    person_obj_id = api.get_object_id("person")
+    task_fields = api.get_fields(task_obj_id)
+    person_fields = api.get_fields(person_obj_id)
+
+    care_type_field = task_fields.get("careType")
+    call_status_field = task_fields.get("callStatus")
+    due_at_field = task_fields.get("dueAt")
+    task_id_field = task_fields.get("id")
+    person_id_field = person_fields.get("id")
+    treatment_stage_field = person_fields.get("treatmentStage")
+
+    if not all([care_type_field, call_status_field, task_id_field, person_id_field]):
+        print("   Missing required fields for dashboard, skipping")
+        return
+
+    # Delete existing BVHM dashboards + default dashboard
+    try:
+        existing = api.rest("GET", "dashboards?limit=10")
+        dashboards = existing.get("data", {}).get("dashboards", [])
+        for d in dashboards:
+            try:
+                api.rest("DELETE", f"dashboards/{d['id']}")
+            except Exception:
+                pass
+        if dashboards:
+            print(f"   Cleaned {len(dashboards)} existing dashboards")
+    except Exception:
+        pass
+
+    # Step 1: Create PageLayout via metadata API
+    try:
+        layout_r = api._gql(
+            'mutation($input: CreatePageLayoutInput!) { createPageLayout(input: $input) { id } }',
+            {"input": {
+                "name": "Báo cáo CSKH",
+                "type": "DASHBOARD",
+            }},
+        )
+        layout_id = layout_r["data"]["createPageLayout"]["id"]
+    except Exception as e:
+        print(f"   Failed to create page layout: {e}")
+        return
+
+    # Step 2: Create tab
+    try:
+        tab_r = api._gql(
+            'mutation($input: CreatePageLayoutTabInput!) { createPageLayoutTab(input: $input) { id } }',
+            {"input": {
+                "pageLayoutId": layout_id,
+                "title": "Tổng quan",
+                "position": 0,
+            }},
+        )
+        tab_id = tab_r["data"]["createPageLayoutTab"]["id"]
+    except Exception as e:
+        print(f"   Failed to create tab: {e}")
+        return
+
+    # Step 3: Create widgets
+    widgets = [
+        # Row 0: KPI cards
+        {
+            "title": "Tổng bệnh nhân",
+            "type": "GRAPH",
+            "objectMetadataId": person_obj_id,
+            "gridPosition": {"row": 0, "column": 0, "rowSpan": 2, "columnSpan": 3},
+            "configuration": {
+                "configurationType": "AGGREGATE_CHART",
+                "aggregateFieldMetadataId": person_id_field,
+                "aggregateOperation": "COUNT",
+                "displayDataLabel": True,
+            },
+        },
+        {
+            "title": "Tổng công việc CS",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 0, "column": 3, "rowSpan": 2, "columnSpan": 3},
+            "configuration": {
+                "configurationType": "AGGREGATE_CHART",
+                "aggregateFieldMetadataId": task_id_field,
+                "aggregateOperation": "COUNT",
+                "displayDataLabel": True,
+            },
+        },
+        {
+            "title": "Chưa gọi",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 0, "column": 6, "rowSpan": 2, "columnSpan": 3},
+            "configuration": {
+                "configurationType": "AGGREGATE_CHART",
+                "aggregateFieldMetadataId": call_status_field,
+                "aggregateOperation": "COUNT_EMPTY",
+                "displayDataLabel": True,
+                "label": "Chưa gọi",
+            },
+        },
+        # Row 2: Charts
+        {
+            "title": "Công việc theo loại chăm sóc",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 2, "column": 0, "rowSpan": 6, "columnSpan": 6},
+            "configuration": {
+                "configurationType": "PIE_CHART",
+                "aggregateFieldMetadataId": task_id_field,
+                "aggregateOperation": "COUNT",
+                "groupByFieldMetadataId": care_type_field,
+                "displayDataLabel": True,
+                "displayLegend": True,
+                "showCenterMetric": True,
+            },
+        },
+        {
+            "title": "Trạng thái cuộc gọi",
+            "type": "GRAPH",
+            "objectMetadataId": task_obj_id,
+            "gridPosition": {"row": 2, "column": 6, "rowSpan": 6, "columnSpan": 6},
+            "configuration": {
+                "configurationType": "BAR_CHART",
+                "aggregateFieldMetadataId": task_id_field,
+                "aggregateOperation": "COUNT",
+                "primaryAxisGroupByFieldMetadataId": call_status_field,
+                "layout": "VERTICAL",
+                "displayDataLabel": True,
+                "displayLegend": False,
+            },
+        },
+    ]
+
+    # Add treatmentStage chart if field exists
+    if treatment_stage_field:
+        widgets.append({
+            "title": "Bệnh nhân theo giai đoạn điều trị",
+            "type": "GRAPH",
+            "objectMetadataId": person_obj_id,
+            "gridPosition": {"row": 8, "column": 0, "rowSpan": 6, "columnSpan": 6},
+            "configuration": {
+                "configurationType": "PIE_CHART",
+                "aggregateFieldMetadataId": person_id_field,
+                "aggregateOperation": "COUNT",
+                "groupByFieldMetadataId": treatment_stage_field,
+                "displayDataLabel": True,
+                "displayLegend": True,
+                "showCenterMetric": True,
+            },
+        })
+
+    created_widgets = 0
+    for w in widgets:
+        try:
+            widget_input = {
+                "pageLayoutTabId": tab_id,
+                "title": w["title"],
+                "type": w["type"],
+                "gridPosition": w["gridPosition"],
+                "configuration": w["configuration"],
+            }
+            if w.get("objectMetadataId"):
+                widget_input["objectMetadataId"] = w["objectMetadataId"]
+            api._gql(
+                'mutation($input: CreatePageLayoutWidgetInput!) { createPageLayoutWidget(input: $input) { id } }',
+                {"input": widget_input},
+            )
+            created_widgets += 1
+        except Exception as e:
+            print(f"   Widget '{w['title']}': {e}")
+
+    # Step 4: Create dashboard record linking to page layout
+    try:
+        api.rest("POST", "dashboards", {"title": "Báo cáo CSKH", "pageLayoutId": layout_id})
+        print(f"   Created dashboard with {created_widgets} widgets")
+    except Exception as e:
+        print(f"   Dashboard record: {e}")
+
 
 # =============================================================================
 # MAIN
@@ -854,9 +1091,12 @@ def main():
     seed_companies(api)
     create_workflows(api)
 
-    # 9-13. Demo data (only with --level demo)
+    # Demo data (only with --level demo)
     if args.level == "demo":
         seed_demo_data(api)
+
+    # Dashboard (always)
+    create_dashboard(api)
 
     print("\n" + "=" * 50)
     print(f"Setup complete! Level: {args.level}")
