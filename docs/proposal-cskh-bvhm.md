@@ -40,58 +40,52 @@ Xây dựng **hệ thống quản lý chăm sóc khách hàng (CRM)** chuyên bi
 
 ### 2.1. Tổng quan hệ thống
 
+Hệ thống gồm 2 thành phần:
+
 ```
-┌───────────────────────────────────────────────────────────────┐
-│                      HỆ THỐNG CRM BVHM                       │
-│                                                               │
-│  ┌───────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │  Hồ sơ        │  │ 6 View       │  │  Dashboard       │   │
-│  │  Bệnh nhân    │  │ chăm sóc     │  │  Báo cáo CSKH    │   │
-│  │  (32 fields)  │  │ + Kanban     │  │  (8 biểu đồ)    │   │
-│  └───────────────┘  └──────────────┘  └──────────────────┘   │
-│                                                               │
-│  ┌───────────────┐  ┌──────────────┐  ┌──────────────────┐   │
-│  │  Công việc CS │  │  Chu kỳ      │  │  Lần nhập viện   │   │
-│  │  (15 fields)  │  │  điều trị    │  │                  │   │
-│  └───────────────┘  └──────────────┘  └──────────────────┘   │
-└───────────────────────────────────────────────────────────────┘
-                            │
-              NV CSKH tạo công việc CS
-           dựa trên dữ liệu từ HIS/HIT/IMS
-                            │
-          ┌─────────────────┼─────────────────┐
-          │                 │                 │
-     ┌────▼────┐      ┌────▼────┐      ┌────▼────┐
-     │   HIS   │      │   HIT   │      │   IMS   │
-     │ (nội trú│      │(lịch hẹn│      │ (thuốc) │
-     │  BN mới)│      │tái khám)│      │         │
-     └─────────┘      └─────────┘      └─────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│   ┌───────────────────────────────────────────────────────┐     │
+│   │              1. HỆ THỐNG CRM                          │     │
+│   │                                                       │     │
+│   │  NV CSKH sử dụng hàng ngày:                          │     │
+│   │  • Hồ sơ bệnh nhân (32 fields)                       │     │
+│   │  • Công việc chăm sóc (15 fields + Assignee)          │     │
+│   │  • 6 View theo loại CS + Kanban                       │     │
+│   │  • Dashboard báo cáo (8 biểu đồ)                     │     │
+│   │  • Chu kỳ điều trị, Lần nhập viện                     │     │
+│   │  • 3 Workflows tự động (thai kỳ, cảnh báo quá hạn)   │     │
+│   └───────────────────────┬───────────────────────────────┘     │
+│                           │                                     │
+│                    tạo/cập nhật                                  │
+│                    Person + Task                                │
+│                           │                                     │
+│   ┌───────────────────────┴───────────────────────────────┐     │
+│   │          2. MODULE TÍCH HỢP DỮ LIỆU                  │     │
+│   │             (chạy tự động mỗi ngày 6:00 sáng)         │     │
+│   │                                                       │     │
+│   │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐     │     │
+│   │  │ HIS         │ │ HIT         │ │ IMS         │     │     │
+│   │  │ Connector   │ │ Connector   │ │ Connector   │     │     │
+│   │  │ (nội trú,   │ │ (tái khám,  │ │ (thuốc)     │     │     │
+│   │  │  BN mới)    │ │  beta-thai) │ │             │     │     │
+│   │  └──────┬──────┘ └──────┬──────┘ └──────┬──────┘     │     │
+│   └─────────┼───────────────┼───────────────┼─────────────┘     │
+│             │               │               │                   │
+└─────────────┼───────────────┼───────────────┼───────────────────┘
+              │               │               │
+         ┌────▼────┐     ┌────▼────┐     ┌────▼────┐
+         │   HIS   │     │   HIT   │     │   IMS   │
+         │ Bệnh   │     │ Lịch    │     │ Thuốc & │
+         │ viện    │     │ hẹn     │     │ liệu    │
+         │         │     │         │     │ trình    │
+         └─────────┘     └─────────┘     └─────────┘
+              Hệ thống hiện có của bệnh viện
 ```
 
-### 2.2. Khác biệt so với quy trình cũ
+**Thành phần 1 — Hệ thống CRM:** Giao diện NV CSKH sử dụng hàng ngày để xem danh sách bệnh nhân, gọi điện, ghi chú, theo dõi tiến độ, xem báo cáo.
 
-| Trước (Excel/Drive) | Trên CRM |
-|----------------------|----------|
-| Xuất Excel từ 3 hệ thống, copy-paste, fill thủ công (6+ bước) | Mở view → tạo task → nhập PID → hệ thống hiển thị thông tin BN → gọi (2-3 bước) |
-| Đối soát chéo 4-5 file, dễ sót bệnh nhân | Tất cả trong 1 view, lọc/sắp xếp theo hạn CS |
-| Ghi chú trên file Drive, dễ mất | Ghi chú trực tiếp trên công việc CS, lưu vĩnh viễn |
-| Quản lý hỏi phải tổng hợp thủ công | Dashboard 8 biểu đồ, xem bất cứ lúc nào |
-| Thông tin BN nằm rải rác nhiều file | 1 nơi duy nhất, tra cứu nhanh Ctrl+K theo PID/tên |
-
-### 2.3. Cách tạo công việc chăm sóc
-
-Nhân viên mở view tương ứng trên CRM, bấm tạo công việc mới, nhập PID bệnh nhân — hệ thống tự hiển thị toàn bộ thông tin. Sau khi gọi, cập nhật trạng thái và ghi chú ngay trên task.
-
-| Loại CS | Nguồn dữ liệu | Cách tạo trên CRM |
-|---------|---------------|--------------------|
-| Nội trú | HIS → Báo cáo nội trú | NV xem danh sách HIS → tạo task, nhập PID |
-| CBNM | HIS → Báo cáo tiếp đón | NV xem danh sách HIS → tạo task, nhập PID |
-| Thủ thuật | Lịch PHS qua Zalo | NV xem Zalo → tạo task, nhập PID + giờ hẹn |
-| Tái khám | HIT → Lịch hẹn KH | NV xem lịch HIT → tạo task, nhập PID |
-| Beta-thai | File IUI/IVF trên Drive | NV xem file → tạo task, nhập PID |
-| Thai kỳ | Kết quả beta đậu | NV tạo task mỗi tháng |
-
-> **Lưu ý:** Bảng trên mô tả thao tác của NV khi chưa có tích hợp. Khi module tích hợp HIS/HIT/IMS hoàn thành (xem mục 5), phần lớn công việc CS sẽ được **tạo tự động** — NV chỉ cần mở view và bắt đầu gọi.
+**Thành phần 2 — Module tích hợp dữ liệu:** Chạy tự động mỗi sáng, đọc dữ liệu từ HIS/HIT/IMS → tạo hồ sơ bệnh nhân và công việc CS trên CRM. NV không cần xuất Excel hay nhập liệu thủ công (trừ CS thủ thuật — nguồn từ Zalo).
 
 ---
 
