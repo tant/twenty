@@ -5,8 +5,8 @@
 ---
 
 **Đơn vị thực hiện:** FixPartner
-**Ngày:** 22/03/2026
-**Phiên bản:** 1.0
+**Ngày:** 27/03/2026
+**Phiên bản:** 2.0
 
 ---
 
@@ -14,55 +14,84 @@
 
 ### 1.1. Quy trình hiện tại
 
-Phòng Chăm sóc khách hàng (CSKH) đang quản lý 4 quy trình chính:
+Phòng Chăm sóc khách hàng (CSKH) đang quản lý 6 quy trình chính hoàn toàn bằng Excel/Google Drive:
 
-| # | Quy trình | Mô tả |
-|---|-----------|-------|
-| 1 | Chăm sóc nội trú | Gọi chăm sóc bệnh nhân nhập/xuất viện tại các khoa HTSS, PTTT, Sản |
-| 2 | Chăm sóc TT/CBNM | Chăm sóc ca bệnh nhân mới và nhắc hẹn thủ thuật |
-| 3 | Gọi tái khám | Đối soát lịch hẹn từ nhiều nguồn, gọi nhắc tái khám |
-| 4 | Chăm sóc beta-thai | Theo dõi kết quả beta, chăm sóc thai kỳ cho ca IUI/IVF |
+| # | Quy trình | Nguồn dữ liệu | Thao tác hiện tại |
+|---|-----------|---------------|-------------------|
+| 1 | CS nội trú | HIS → Báo cáo nội trú | Xuất Excel → xóa cột → copy PID → fill ngày, BS, phòng → gọi |
+| 2 | CS CBNM | HIS → Báo cáo tiếp đón | Xuất Excel → lọc PID → kéo hàm → fill thuốc từ IMS → gọi |
+| 3 | Nhắc hẹn thủ thuật | Lịch PHS qua Zalo | Nhập PID thủ công → fill giờ từ Zalo → gọi |
+| 4 | Gọi tái khám | HIT → Lịch hẹn KH | Xuất Excel → đối soát 4-5 file (IMS, HIT, sheet IUI/IVF/CBNM) → gọi |
+| 5 | CS beta-thai | File IUI/IVF trên Drive | Nhập liệu ca bơm/chuyển phôi → đối soát → gửi quản lý duyệt → gọi |
+| 6 | CS thai kỳ | Kết quả beta | Theo dõi thủ công, gọi mỗi tháng 1 lần |
 
 ### 1.2. Các điểm nghẽn chính
 
-- **Thao tác thủ công nhiều:** Nhân viên phải đăng nhập HIS/HIT/IMS, xuất Excel, copy-paste dữ liệu qua Google Drive, xóa cột, kéo hàm, fill thuốc thủ công mỗi ngày.
-- **Dữ liệu phân tán:** Thông tin bệnh nhân nằm rải rác trên HIS, HIT, IMS, Google Sheets (file IUI, IVF, CBNM, Nội trú, Beta...) — rất dễ sót hoặc sai lệch.
-- **Đối soát tốn thời gian:** Quy trình tái khám cần đối soát chéo giữa 4-5 nguồn dữ liệu (IMS, HIT, sheet IUI, sheet IVF, file tái khám) để đảm bảo không thiếu bệnh nhân.
-- **Thiếu báo cáo tổng quan:** Quản lý khó nắm được tình hình chăm sóc tổng thể, tỷ lệ gọi thành công, số ca đang theo dõi.
+- **Thao tác thủ công nhiều:** Mỗi ngày nhân viên phải đăng nhập HIS/HIT/IMS, xuất Excel, copy-paste qua Google Drive, xóa cột, kéo hàm, fill thuốc. Riêng quy trình tái khám mất 6 bước đối soát.
+- **Dữ liệu phân tán:** Thông tin bệnh nhân nằm rải rác trên HIS, HIT, IMS, Google Sheets — dễ sót hoặc sai lệch.
+- **Đối soát tốn thời gian:** Quy trình tái khám cần đối soát chéo giữa 4-5 nguồn dữ liệu để đảm bảo không thiếu bệnh nhân.
+- **Thiếu báo cáo tổng quan:** Quản lý không nắm được tình hình chăm sóc tổng thể, tỷ lệ gọi thành công, khối lượng công việc từng nhân viên.
 
 ---
 
 ## 2. Giải pháp đề xuất
 
-Xây dựng **hệ thống quản lý chăm sóc khách hàng (CRM)** chuyên biệt cho bệnh viện, tích hợp trực tiếp với hệ thống HIS/HIT/IMS hiện có, giúp tự động hóa các thao tác thủ công và tập trung toàn bộ dữ liệu về một nền tảng duy nhất.
+Xây dựng **hệ thống quản lý chăm sóc khách hàng (CRM)** chuyên biệt cho bệnh viện, tập trung toàn bộ dữ liệu bệnh nhân và công việc chăm sóc về một nền tảng duy nhất, tuỳ biến hoàn toàn cho quy trình CSKH của BVHM.
 
-**Địa chỉ hệ thống:** https://bvhmsg.fixpartner.co (hoặc địa chỉ khác do khách hàng chọn)
-
-### 2.1. Sơ đồ tổng quan
+### 2.1. Tổng quan hệ thống
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    HỆ THỐNG CRM BVHM                       │
-│                                                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐   │
-│  │   Hồ sơ      │  │  Danh sách   │  │   Báo cáo &     │   │
-│  │  Bệnh nhân   │  │  chăm sóc    │  │   Thống kê      │   │
-│  └──────▲───────┘  └──────▲───────┘  └────────▲────────┘   │
-│       │               │                      │              │
-│       └───────────────┼──────────────────────┘              │
-│                       │                                     │
-│              ┌────────▼────────┐                            │
-│              │  Module tích hợp  │                            │
-│              │  dữ liệu tự động │                            │
-│              └────────▲────────┘                            │
-└───────────────────────┼─────────────────────────────────────┘
-                        │
-          ┌─────────────┼─────────────┐
-          │             │             │
-     ┌────▼───┐   ┌────▼───┐   ┌────▼───┐
-     │  HIS   │   │  HIT   │   │  IMS   │
-     └────────┘   └────────┘   └────────┘
+┌───────────────────────────────────────────────────────────────┐
+│                      HỆ THỐNG CRM BVHM                       │
+│                                                               │
+│  ┌───────────────┐  ┌──────────────┐  ┌──────────────────┐   │
+│  │  Hồ sơ        │  │ 6 View       │  │  Dashboard       │   │
+│  │  Bệnh nhân    │  │ chăm sóc     │  │  Báo cáo CSKH    │   │
+│  │  (32 fields)  │  │ + Kanban     │  │  (8 biểu đồ)    │   │
+│  └───────────────┘  └──────────────┘  └──────────────────┘   │
+│                                                               │
+│  ┌───────────────┐  ┌──────────────┐  ┌──────────────────┐   │
+│  │  Công việc CS │  │  Chu kỳ      │  │  Lần nhập viện   │   │
+│  │  (15 fields)  │  │  điều trị    │  │                  │   │
+│  └───────────────┘  └──────────────┘  └──────────────────┘   │
+└───────────────────────────────────────────────────────────────┘
+                            │
+              NV CSKH tạo công việc CS
+           dựa trên dữ liệu từ HIS/HIT/IMS
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+     ┌────▼────┐      ┌────▼────┐      ┌────▼────┐
+     │   HIS   │      │   HIT   │      │   IMS   │
+     │ (nội trú│      │(lịch hẹn│      │ (thuốc) │
+     │  BN mới)│      │tái khám)│      │         │
+     └─────────┘      └─────────┘      └─────────┘
 ```
+
+### 2.2. Khác biệt so với quy trình cũ
+
+| Trước (Excel/Drive) | Trên CRM |
+|----------------------|----------|
+| Xuất Excel từ 3 hệ thống, copy-paste, fill thủ công (6+ bước) | Mở view → tạo task → nhập PID → hệ thống hiển thị thông tin BN → gọi (2-3 bước) |
+| Đối soát chéo 4-5 file, dễ sót bệnh nhân | Tất cả trong 1 view, lọc/sắp xếp theo hạn CS |
+| Ghi chú trên file Drive, dễ mất | Ghi chú trực tiếp trên công việc CS, lưu vĩnh viễn |
+| Quản lý hỏi phải tổng hợp thủ công | Dashboard 8 biểu đồ, xem bất cứ lúc nào |
+| Thông tin BN nằm rải rác nhiều file | 1 nơi duy nhất, tra cứu nhanh Ctrl+K theo PID/tên |
+
+### 2.3. Cách tạo công việc chăm sóc
+
+Nhân viên mở view tương ứng trên CRM, bấm tạo công việc mới, nhập PID bệnh nhân — hệ thống tự hiển thị toàn bộ thông tin. Sau khi gọi, cập nhật trạng thái và ghi chú ngay trên task.
+
+| Loại CS | Nguồn dữ liệu | Cách tạo trên CRM |
+|---------|---------------|--------------------|
+| Nội trú | HIS → Báo cáo nội trú | NV xem danh sách HIS → tạo task, nhập PID |
+| CBNM | HIS → Báo cáo tiếp đón | NV xem danh sách HIS → tạo task, nhập PID |
+| Thủ thuật | Lịch PHS qua Zalo | NV xem Zalo → tạo task, nhập PID + giờ hẹn |
+| Tái khám | HIT → Lịch hẹn KH | NV xem lịch HIT → tạo task, nhập PID |
+| Beta-thai | File IUI/IVF trên Drive | NV xem file → tạo task, nhập PID |
+| Thai kỳ | Kết quả beta đậu | NV tạo task mỗi tháng |
+
+> **Lưu ý:** Bảng trên mô tả thao tác của NV khi chưa có tích hợp. Khi module tích hợp HIS/HIT/IMS hoàn thành (xem mục 5), phần lớn công việc CS sẽ được **tạo tự động** — NV chỉ cần mở view và bắt đầu gọi.
 
 ---
 
@@ -70,194 +99,336 @@ Xây dựng **hệ thống quản lý chăm sóc khách hàng (CRM)** chuyên bi
 
 ### 3.1. Quản lý hồ sơ bệnh nhân
 
-Tập trung toàn bộ thông tin bệnh nhân trên một nền tảng:
+Tập trung toàn bộ thông tin bệnh nhân trên một nền tảng với **32 trường dữ liệu chuyên biệt:**
 
-- **Thông tin cá nhân:** Họ tên, PID, ngày sinh, giới tính, CCCD, số BHYT, nhóm máu
-- **Thông tin liên hệ:** SĐT, email, địa chỉ, thông tin người thân (tên, quan hệ, SĐT)
-- **Thông tin điều trị:** Giai đoạn (Tư vấn → Khám → IUI/IVF → Mang thai → Theo dõi thai → Sau sinh), khoa điều trị, PK/BS phụ trách, đối tác (bảo hiểm/giới thiệu)
-- **Thông tin liệu trình:** Thuốc đang sử dụng (từ IMS), chu kỳ IUI/IVF hiện tại, ngày bơm IUI / ngày chuyển phôi, số liệu beta, lý do hủy chu kỳ (nếu có)
-- **Lịch sử chăm sóc:** Toàn bộ lịch sử gọi điện, ghi chú, kết quả chăm sóc được lưu trữ theo dòng thời gian
+| Nhóm | Các trường |
+|------|-----------|
+| **Định danh** | PID, năm sinh, ngày sinh, giới tính, CCCD |
+| **Nguồn BN** | Nguồn (Marketing/BV/BS hợp tác), đối tác giới thiệu |
+| **Y khoa** | Chẩn đoán, thuốc đang dùng, chu kỳ hiện tại, kết quả beta, giai đoạn điều trị, trigger (thuốc kích) |
+| **Điều trị** | Ngày bơm IUI, ngày chuyển phôi, lý do hủy chu kỳ, ngày tiếp đón, số ngày điều trị |
+| **Liên hệ** | Người liên hệ, SĐT liên hệ |
+| **Vợ/chồng** | Tên, PID, SĐT vợ/chồng (tra cứu chéo) |
+| **Phân công** | Phòng khám, BS phụ trách |
+| **Bảo hiểm** | Số BHYT, nhóm máu |
+| **Thai sản** | Ngày dự sinh, tuần thai |
+| **Thông tin bé** (khoa Sản) | Ngày sinh bé, giới tính bé, cân nặng bé |
 
-### 3.2. Danh sách bệnh nhân theo loại chăm sóc
+### 3.2. Quản lý công việc chăm sóc
 
-Thay vì xuất Excel và fill thủ công, hệ thống sẽ **tự động lọc và hiển thị danh sách bệnh nhân** cần chăm sóc theo từng loại. Nhân viên mở view tương ứng, click vào bệnh nhân để xem hồ sơ, gọi điện và ghi chú trực tiếp trên timeline.
+Mỗi công việc CS = 1 việc cần gọi cho 1 bệnh nhân, với **15 trường dữ liệu:**
 
-| View | Nguồn dữ liệu | Mô tả |
-|------|---------------|-------|
-| **Nội trú** | HIS - Báo cáo nội trú + lịch thủ thuật PHS | Danh sách bệnh nhân nhập/xuất viện (HTSS, PTTT, Sản), kèm ngày vào/xuất viện, phòng bệnh, BS thực hiện. Đánh dấu OR/ET/FET theo lịch thủ thuật |
-| **CBNM** | HIS - Báo cáo tiếp đón + IMS | Danh sách bệnh nhân mới, kèm thông tin thuốc và phân loại PK/BS từ IMS. Tự loại trừ ca hủy chu kỳ (lấy lý do hủy từ HIS) |
-| **Thủ thuật** | Lịch thủ thuật PHS (nhập thủ công) | Bệnh nhân có lịch thủ thuật theo PID từ lịch PHS ban hành, kèm giờ hẹn (PHS gửi qua Zalo). *Phần này cần nhập thủ công vì nguồn không từ hệ thống* |
-| **Tái khám** | HIT - Lịch hẹn KH + IMS + sheet IUI/IVF/CBNM | Danh sách bệnh nhân cần tái khám, đã loại bỏ hẹn phòng hồ sơ/cấp cứu/hành chính, đối soát chéo với IMS và các sheet liệu trình, cảnh báo khi IMS/HIT không trùng khớp |
-| **Beta-thai** | HIS - Lịch tái khám ngày mai + file IUI/IVF trên Drive | IUI: bệnh nhân ngày sau bơm. IVF: bệnh nhân đủ 14 ngày sau chuyển phôi. Đối soát với danh sách tái khám, gửi quản lý duyệt trước khi gọi |
-| **Thai kỳ** | Kết quả beta | Bệnh nhân beta đậu được tự động chuyển giai đoạn sang "Mang thai", hiển thị trong view khi đến hạn chăm sóc (mỗi tháng 1 lần) |
+- **Phân loại:** Loại chăm sóc (6 loại), loại lịch hẹn (7 loại)
+- **Lịch hẹn:** Giờ hẹn, giờ có mặt, ngày nhắc, mã khám
+- **Liên lạc:** Trạng thái gọi (Chưa gọi / Đã gọi / Cần gọi lại / Không liên lạc), ghi chú chăm sóc, ghi chú, lưu ý
+- **Y khoa:** Lời dặn BS, thuốc, BS phụ trách, phòng khám
+- **Duyệt:** Trạng thái duyệt (cho beta-thai)
+- **Assignee:** NV CSKH nào phụ trách task (field có sẵn)
 
-**Trên mỗi hồ sơ bệnh nhân, nhân viên thấy:**
-- Thông tin đầy đủ: PID, họ tên, SĐT, PK/BS phụ trách
-- Thuốc đang sử dụng (fill tự động từ IMS)
-- Thông tin liệu trình: chu kỳ, ngày bơm/chuyển phôi, số liệu beta, lý do hủy (nếu có)
-- Note/nhắc nhở từ phòng khám (nếu có)
-- Trạng thái chăm sóc: Chưa gọi → Đã gọi → Cần gọi lại → Không liên lạc được
-- Timeline: toàn bộ lịch sử ghi chú, cuộc gọi, thay đổi giai đoạn
+### 3.3. Bảy view chuyên biệt
 
-### 3.3. Tích hợp & đối soát tự động
+| View | Lọc theo | Mục đích |
+|------|---------|----------|
+| CS nội trú | careType = Nội trú | BN vừa xuất viện |
+| CS CBNM | careType = CBNM | BN mới đến khám |
+| CS thủ thuật | careType = Thủ thuật | Nhắc lịch thủ thuật |
+| CS tái khám | careType = Tái khám | Lịch tái khám |
+| CS beta-thai | careType = Beta-thai | Theo dõi kết quả beta |
+| CS thai kỳ | careType = Thai kỳ | Chăm sóc thai kỳ hàng tháng |
+| **CS theo trạng thái** | Kanban theo trạng thái gọi | Tổng quan: kéo thả task giữa cột |
 
-Đây là phần cốt lõi giúp loại bỏ thao tác thủ công:
+### 3.4. Dashboard báo cáo CSKH
 
-- **Đồng bộ lịch hẹn:** Tự động lấy lịch hẹn tái khám từ HIT, đối soát với IMS, đánh dấu các trường hợp không trùng khớp để nhân viên kiểm tra
-- **Đồng bộ bệnh nhân mới:** Bệnh nhân tiếp đón trên HIS tự động được tạo hồ sơ trên CRM
-- **Đồng bộ nội trú:** Thông tin nhập/xuất viện tự động cập nhật
-- **Tự lọc loại trừ:** Tự động loại bỏ lịch hẹn Phòng hồ sơ, Cấp cứu, Hành chính; tự loại các ca hủy chu kỳ
+8 biểu đồ dành cho quản lý:
 
-### 3.4. Báo cáo cho quản lý
+| Biểu đồ | Ý nghĩa |
+|----------|---------|
+| Tổng bệnh nhân | Số BN trong hệ thống |
+| Tổng công việc CS | Tổng task đã tạo |
+| Chưa gọi | Số task chưa xử lý |
+| Công việc theo loại CS | Phân bổ: Nội trú / CBNM / Thủ thuật / Tái khám / Beta / Thai kỳ |
+| Trạng thái cuộc gọi | Đã gọi / Chưa gọi / Cần gọi lại / Không liên lạc |
+| BN theo giai đoạn điều trị | IVF / IUI / Thai kỳ / Hoàn thành / Sảy-Lưu |
+| Công việc CS theo thời gian | Xu hướng theo tuần |
+| Khối lượng CS theo nhân viên | Cân bằng khối lượng giữa NV |
 
-Báo cáo tổng quan phục vụ cấp quản lý:
+### 3.5. Các chức năng bổ sung
 
-- Số lượng cuộc gọi theo ngày/tuần/tháng
-- Tỷ lệ gọi thành công / không liên lạc được / cần gọi lại
-- Khối lượng chăm sóc theo nhân viên
-- Số bệnh nhân chưa gọi, quá hạn
-- Thời gian trung bình hoàn thành chăm sóc
-
----
-
-## 4. Phạm vi công việc
-
-### Giai đoạn 1: Phân tích & tích hợp dữ liệu (2-3 tuần)
-
-| # | Công việc | Chi tiết |
-|---|-----------|----------|
-| 1.1 | Khảo sát hệ thống HIS/HIT/IMS | Xác định API hoặc phương thức xuất dữ liệu khả dụng, cấu trúc dữ liệu, tần suất cập nhật |
-| 1.2 | Mapping dữ liệu | Lập bảng ánh xạ các trường dữ liệu giữa HIS/HIT/IMS và CRM (PID, mã bệnh nhân, thuốc, lịch hẹn...) |
-| 1.3 | Xây dựng module tích hợp | Viết các connector lấy dữ liệu tự động từ HIS/HIT/IMS, xử lý đối soát, loại trừ dữ liệu không cần thiết |
-| 1.4 | Kiểm thử tích hợp | Chạy thử với dữ liệu thực, so sánh kết quả với quy trình thủ công hiện tại để đảm bảo độ chính xác |
-
-### Giai đoạn 2: Giao diện làm việc & quy trình chăm sóc (2 tuần)
-
-| # | Công việc | Chi tiết |
-|---|-----------|----------|
-| 2.1 | Thiết kế các view bệnh nhân | Tạo các view lọc sẵn theo loại chăm sóc (nội trú, CBNM, tái khám, beta-thai, thai kỳ) với các cột hiển thị phù hợp |
-| 2.2 | Cấu hình đồng bộ tự động | Dữ liệu từ HIS/HIT/IMS tự động cập nhật vào hồ sơ bệnh nhân, bệnh nhân tự xuất hiện trong view đúng khi có dữ liệu mới |
-| 2.3 | Quy trình ghi nhận kết quả | Xây dựng giao diện ghi chú nhanh trên timeline bệnh nhân sau cuộc gọi, cập nhật trạng thái chăm sóc |
-| 2.4 | Chuyển giai đoạn tự động | Beta đậu → tự chuyển sang "Mang thai", bệnh nhân tự xuất hiện trong view thai kỳ khi đến hạn chăm sóc hàng tháng |
-
-### Giai đoạn 3: Báo cáo & bàn giao (1 tuần)
-
-| # | Công việc | Chi tiết |
-|---|-----------|----------|
-| 3.1 | Xây dựng dashboard hoạt động CSKH | Báo cáo tổng quan cuộc gọi, hiệu suất nhân viên, tỷ lệ hoàn thành, ca quá hạn |
-| 3.2 | Đào tạo sử dụng | Hướng dẫn nhân viên CSKH và quản lý sử dụng hệ thống |
-| 3.3 | Hỗ trợ vận hành song song | Chạy song song với quy trình cũ trong 1-2 tuần để đảm bảo ổn định |
+| Chức năng | Mô tả |
+|-----------|-------|
+| **Ghi chú chăm sóc** | Ghi kết quả liên lạc trên công việc CS (VD: "09:54 ĐÃ GỌI", "KNM, đã nhắn Zalo") + Ghi chú bổ sung + Lưu ý |
+| **Chu kỳ điều trị** | Theo dõi IUI/IVF: loại, trạng thái, BS, ngày thủ thuật, kết quả beta |
+| **Lần nhập viện** | Lịch sử nội trú: loại khoa, ngày nhập/xuất, BS, phòng |
+| **11 Khoa/PK** | Khoa HTSS, Phụ sản, Nam khoa, 7 PK bác sĩ, PK hành chính |
+| **3 Workflows** | Thai kỳ Auto-Create, Thai kỳ Recurring, Cảnh báo quá hạn |
+| **Sidebar tiếng Việt** | Toàn bộ menu và nhãn tiếng Việt có dấu |
 
 ---
 
-## 5. Lợi ích kỳ vọng
+## 4. Phạm vi công việc & kế hoạch bàn giao
 
-| Hiện tại | Sau khi triển khai |
-|----------|-------------------|
-| Xuất Excel từ 3 hệ thống mỗi ngày, copy-paste thủ công | Dữ liệu tự động đồng bộ, không cần xuất file |
-| Đối soát chéo 4-5 file, dễ sót bệnh nhân | Hệ thống tự đối soát, cảnh báo khi có sai lệch |
-| Không biết nhân viên đã gọi bao nhiêu ca | Dashboard theo dõi real-time |
-| Quản lý hỏi phải tổng hợp thủ công | Báo cáo tự động, xem bất cứ lúc nào |
-| Thông tin bệnh nhân nằm rải rác nhiều file | Một nơi duy nhất, tra cứu nhanh theo PID |
+### 4.1. Phạm vi bàn giao
+
+| # | Hạng mục | Mô tả |
+|---|----------|-------|
+| 1 | **Hệ thống CRM production** | Triển khai, cấu hình đầy đủ các chức năng tại mục 3, sẵn sàng sử dụng |
+| 2 | **Module tích hợp HIS/HIT/IMS** | Tự động đồng bộ bệnh nhân, lịch hẹn, thuốc, tạo công việc CS |
+| 3 | **Tài khoản người dùng** | Admin + Quản lý + NV CSKH (5-7 tài khoản) |
+| 4 | **Tài liệu hướng dẫn sử dụng** | Hướng dẫn chi tiết cho NV CSKH (bản điện tử) |
+| 5 | **Đào tạo trực tiếp** | 1 buổi tại bệnh viện (~90 phút) |
+| 6 | **Hỗ trợ vận hành song song** | 1-2 tuần sau đào tạo |
+| 7 | **Sao lưu tự động** | Cấu hình backup hàng ngày, giữ 30 bản |
+| 8 | **Mã nguồn** | Toàn bộ mã nguồn hệ thống + tài liệu kỹ thuật |
+
+### 4.2. Triển khai production
+
+Tạo hệ thống mới hoàn toàn cho production:
+
+```
+Bước 1: Dựng hệ thống CRM trên server FixPartner
+Bước 2: Cấu hình chuyên biệt cho BVHM
+        → 32 fields BN, 15 fields Task, 7 views, 11 Khoa/PK,
+          2 custom objects, 3 workflows, dashboard, sidebar tiếng Việt
+Bước 3: Tạo tài khoản cho nhân viên
+Bước 4: Cấu hình sao lưu tự động
+Bước 5: Sẵn sàng sử dụng
+```
+
+**Thời gian triển khai:** Trong ngày
+
+### 4.3. Tài khoản & phân quyền
+
+| Vai trò | Quyền | Số lượng |
+|---------|-------|----------|
+| **Admin** | Tạo/quản lý tài khoản, cấu hình hệ thống | 1 (FixPartner hoặc IT BV) |
+| **Quản lý** | Xem tất cả dữ liệu, duyệt beta-thai, xem dashboard | 1 (Trưởng phòng CSKH) |
+| **Nhân viên** | Xem tất cả dữ liệu, tạo/cập nhật task, ghi chú | 3-5 (NV CSKH) |
+
+Chức năng tự đăng ký tài khoản bị tắt — tất cả tài khoản do Admin tạo.
+
+### 4.4. Đào tạo
+
+**1 buổi trực tiếp** tại bệnh viện (~90 phút):
+
+| Thời lượng | Nội dung | Đối tượng |
+|------------|----------|-----------|
+| 15 phút | Đăng nhập, giới thiệu giao diện | Tất cả |
+| 30 phút | Tạo công việc CS, gọi BN, cập nhật trạng thái, ghi chú | NV CSKH |
+| 15 phút | Kanban, lọc/sắp xếp, tìm kiếm BN | NV CSKH |
+| 15 phút | Dashboard báo cáo, duyệt beta-thai | Quản lý |
+| 15 phút | Quản lý tài khoản, hỏi đáp | Tất cả |
+
+Kèm tài liệu hướng dẫn sử dụng chi tiết (bản điện tử).
+
+### 4.5. Vận hành song song
+
+**1-2 tuần** sau đào tạo, NV chạy song song CRM + Excel:
+
+| Tuần | Mô tả |
+|------|-------|
+| **Tuần 1** | Nhập liệu cả Excel và CRM — làm quen, so sánh kết quả |
+| **Tuần 2** | Chuyển chính sang CRM, chỉ dùng Excel kiểm tra chéo khi cần |
+| **Sau tuần 2** | Ngừng Excel, dùng CRM hoàn toàn |
+
+**Tiêu chí ngừng Excel:**
+- 100% NV CSKH đăng nhập CRM mỗi ngày
+- Tất cả task được tạo và cập nhật trên CRM
+- Quản lý xác nhận dashboard phản ánh đúng thực tế
+
+### 4.6. Tiến độ tổng thể
+
+| GĐ | Giai đoạn | Thời gian | Mô tả |
+|----|-----------|-----------|-------|
+| **1** | **Khảo sát & mapping dữ liệu** | 1-2 tuần | BA làm việc với NV CSKH, review quy trình thực tế, mapping chính xác các trường dữ liệu HIS/HIT/IMS → CRM |
+| **2** | **Phát triển & tích hợp** | 3-4 tuần | Xây dựng hệ thống CRM + module tích hợp HIS/HIT/IMS, chạy thử trên môi trường thử nghiệm |
+| **3** | **Triển khai & vận hành thử** | 2-3 tuần | Triển khai production, đào tạo, vận hành song song CRM + Excel, nghiệm thu |
+
+**Tổng thời gian: ~6-9 tuần**
 
 ---
 
-## 6. Yêu cầu hợp tác từ bệnh viện
+## 5. Tích hợp HIS/HIT/IMS — Module đồng bộ dữ liệu
 
-Để triển khai hiệu quả, chúng tôi cần sự phối hợp từ bệnh viện:
+### 5.1. Mục tiêu
 
-1. **Cung cấp tài khoản truy cập** HIS/HIT/IMS (hoặc API documentation nếu có)
-2. **Cử 1-2 nhân viên CSKH** phối hợp trong quá trình phân tích và kiểm thử
-3. **Cung cấp file mẫu** (file IUI, IVF, CBNM, Nội trú hiện đang dùng trên Drive) để mapping dữ liệu
-4. **Phối hợp với phòng IT** để đảm bảo kết nối mạng giữa CRM và các hệ thống nội bộ
+Xây dựng module tự động lấy dữ liệu từ HIS/HIT/IMS → tạo hồ sơ bệnh nhân và công việc CS trên CRM, **thay thế hoàn toàn** thao tác xuất Excel, copy-paste, fill, đối soát thủ công.
+
+### 5.2. Ba giai đoạn triển khai
+
+#### Giai đoạn 1 — Khảo sát & mapping dữ liệu (1-2 tuần)
+
+**Nhân sự:** BA (Business Analyst) của FixPartner + 1-2 NV CSKH của bệnh viện
+
+| # | Công việc | Đầu ra |
+|---|-----------|--------|
+| 1.1 | Ngồi cùng NV CSKH, quan sát quy trình thực tế hàng ngày | Tài liệu quy trình chi tiết (as-is) |
+| 1.2 | Khảo sát HIS/HIT/IMS: xác định API hoặc phương thức xuất dữ liệu | Báo cáo kỹ thuật: có API hay chỉ xuất file |
+| 1.3 | Lấy file mẫu thực tế từ HIS/HIT, đối chiếu cột dữ liệu | Bảng mapping chi tiết: cột Excel → field CRM |
+| 1.4 | Xác nhận logic nghiệp vụ: loại trừ, đối soát, hạn CS | Tài liệu quy tắc nghiệp vụ đã được NV xác nhận |
+
+**Kết quả giai đoạn 1:** Bảng mapping chính xác + quy tắc nghiệp vụ, đủ để phát triển module tích hợp.
+
+#### Giai đoạn 2 — Phát triển module tích hợp (3-4 tuần)
+
+**Nhân sự:** Đội kỹ thuật FixPartner
+
+| # | Công việc | Mô tả |
+|---|-----------|-------|
+| 2.1 | Xây dựng hệ thống CRM | Cấu hình 32 fields BN, 15 fields Task, 7 views, dashboard, sidebar |
+| 2.2 | Phát triển HIS Connector | Đọc dữ liệu nội trú + BN mới → tạo Person + Task (Nội trú, CBNM). Riêng khoa Phụ sản: tự tạo 2 task (CS ngày 1 + CS ngày 7-10 sau xuất viện) |
+| 2.3 | Phát triển HIT Connector | Đọc lịch hẹn tái khám → tạo Task (Tái khám, Beta-thai), đối soát + loại trừ PK hành chính |
+| 2.4 | Phát triển IMS Connector | Đọc thuốc theo PID → cập nhật Person.medication |
+| 2.5 | Phát triển IUI/IVF Processor | Đọc file IUI/IVF → tạo Task Beta-thai (IUI+1 ngày, IVF+14 ngày sau ET) |
+| 2.6 | Cấu hình Workflows | Activate: Thai kỳ Auto-Create, Thai kỳ Recurring, Cảnh báo quá hạn |
+| 2.7 | Chạy thử trên môi trường test | So sánh kết quả với quy trình thủ công để đảm bảo chính xác |
+
+**Hai chế độ tích hợp** (tùy kết quả khảo sát GĐ1):
+
+| Chế độ | Khi nào | Cách hoạt động |
+|--------|---------|----------------|
+| **File Import** | HIS/HIT/IMS chỉ xuất được Excel/CSV | NV IT xuất file hàng ngày → đặt vào thư mục → module tự đọc & import |
+| **API Direct** | HIS/HIT/IMS có API | Module gọi API trực tiếp, không cần can thiệp thủ công |
+
+**Kết quả giai đoạn 2:** Hệ thống CRM hoàn chỉnh + module tích hợp, chạy ổn định trên môi trường thử nghiệm.
+
+#### Giai đoạn 3 — Triển khai & vận hành thử (2-3 tuần)
+
+| # | Công việc | Thời gian | Mô tả |
+|---|-----------|-----------|-------|
+| 3.1 | Triển khai production | Ngày 1 | Dựng hệ thống mới, cấu hình, tạo tài khoản |
+| 3.2 | Đào tạo | Ngày 2 | 1 buổi trực tiếp tại bệnh viện (~90 phút) |
+| 3.3 | Vận hành song song | Tuần 1-2 | NV dùng song song CRM + Excel, FixPartner hỗ trợ qua Zalo |
+| 3.4 | Điều chỉnh | Trong tuần 1-2 | Sửa mapping, view, field nếu phát hiện sai lệch |
+| 3.5 | Nghiệm thu | Cuối tuần 2 | Quản lý xác nhận, ký biên bản |
+
+**Tiêu chí nghiệm thu:**
+- Dữ liệu từ HIS/HIT/IMS đồng bộ chính xác vào CRM
+- 100% NV CSKH sử dụng CRM hàng ngày
+- Dashboard phản ánh đúng thực tế
+- Không còn phụ thuộc Excel cho các quy trình CS
+
+### 5.3. Module tích hợp — Chi tiết kỹ thuật
+
+| Connector | Đầu vào (từ HIS/HIT/IMS) | Đầu ra (trên CRM) |
+|-----------|--------------------------|---------------------|
+| **HIS — Nội trú** | PID, tên, SĐT, ngày vào/xuất viện, phòng, BS, OR/ET/FET | Upsert Person + Tạo Task (Nội trú) + Tạo Lần nhập viện |
+| **HIS — Tiếp đón** | PID, tên, SĐT, ngày khám, PK/BS | Upsert Person + Tạo Task (CBNM) |
+| **HIT — Lịch hẹn** | PID, mã khám, ngày hẹn, PK, chẩn đoán, khung giờ | Upsert Person + Tạo Task (Tái khám hoặc Beta-thai) |
+| **IMS — Thuốc** | PID, thuốc đang dùng, lý do hủy | Cập nhật Person.medication, Person.cancellationReason |
+| **IUI/IVF** | PID, ngày bơm/ngày ET, BS, trạng thái | Upsert Chu kỳ điều trị + Tạo Task (Beta-thai) |
+
+**Quy tắc nghiệp vụ (xác nhận lại ở GĐ1):**
+
+| Quy tắc | Mô tả |
+|---------|-------|
+| Loại trừ phòng | Bỏ lịch hẹn Phòng hồ sơ, Cấp cứu, Hành chính |
+| Đối soát | So sánh ngày hẹn HIT vs IMS → cảnh báo nếu không khớp |
+| Hạn CS nội trú | Ngày xuất viện + 1 ngày |
+| Hạn CS beta IUI | Ngày bơm + 1 ngày |
+| Hạn CS beta IVF | Ngày chuyển phôi + 14 ngày |
+| Ca hủy | Cập nhật lý do hủy, không tạo task mới |
+| Chống trùng | Tìm theo PID + loại CS + ngày → không tạo task trùng |
+
+**Lịch chạy:** Mỗi ngày lúc 6:00 sáng (trước giờ NV CSKH bắt đầu làm)
+
+### 5.4. Yêu cầu hợp tác từ bệnh viện
+
+| # | Yêu cầu | Giai đoạn |
+|---|---------|-----------|
+| 1 | Cử 1-2 NV CSKH làm việc cùng BA | GĐ1 |
+| 2 | Cung cấp tài khoản HIS/HIT/IMS (hoặc file mẫu thực tế) | GĐ1 |
+| 3 | Phối hợp IT để khảo sát API hoặc thống nhất quy trình xuất file | GĐ1 |
+| 4 | Xác nhận bảng mapping và quy tắc nghiệp vụ | Cuối GĐ1 |
+| 5 | Cử NV tham gia đào tạo và vận hành song song | GĐ3 |
+| 6 | Trưởng phòng xác nhận nghiệm thu | Cuối GĐ3 |
 
 ---
 
-## 7. Hạ tầng, vận hành & bảo mật
+## 6. Hạ tầng, vận hành & bảo mật
 
-### 7.1. Hạ tầng & triển khai
+### 6.1. Hạ tầng & triển khai
 
 - Hệ thống được **triển khai trên máy chủ của FixPartner**, đảm bảo hiệu năng và tính sẵn sàng cao.
-- Địa chỉ truy cập: https://bvhmsg.fixpartner.co (hoặc một url khác cho bệnh viện chọn) — nhân viên bệnh viện truy cập qua trình duyệt web, không cần cài đặt phần mềm.
-- Dữ liệu được lưu trữ trên hệ thống cơ sở dữ liệu chuyên dụng, sao lưu định kỳ.
+- Nhân viên bệnh viện truy cập qua trình duyệt web, không cần cài đặt phần mềm.
+- Nền tảng CRM chuyên biệt, cơ sở dữ liệu PostgreSQL, Redis.
 
-### 7.2. Duy trì & hỗ trợ kỹ thuật
+### 6.2. Sao lưu & khôi phục
 
-- FixPartner **chịu trách nhiệm duy trì, vận hành hệ thống** và xử lý các sự cố kỹ thuật phát sinh trong quá trình sử dụng.
+- **Sao lưu tự động** mỗi ngày lúc 2:00 sáng.
+- Giữ **30 bản sao lưu** gần nhất.
+- **Sao lưu thủ công** trước mỗi lần nâng cấp hệ thống.
+- Kiểm tra khôi phục tối thiểu 1 lần/tháng.
+
+### 6.3. Duy trì & hỗ trợ kỹ thuật
+
+- FixPartner **chịu trách nhiệm duy trì, vận hành hệ thống** và xử lý sự cố kỹ thuật.
 - Cập nhật, nâng cấp tính năng theo yêu cầu nghiệp vụ của bệnh viện.
-- Hỗ trợ kỹ thuật qua các kênh liên lạc đã thống nhất.
+- Hỗ trợ kỹ thuật qua Zalo nhóm hỗ trợ.
 
-### 7.3. Cam kết bảo mật dữ liệu
-
-FixPartner cam kết thực hiện các biện pháp bảo mật sau:
+### 6.4. Cam kết bảo mật dữ liệu
 
 **Bảo mật kỹ thuật:**
-- Mã hóa toàn bộ kết nối bằng HTTPS/TLS, không truyền dữ liệu dạng văn bản thường (plaintext)
-- Phân quyền truy cập theo vai trò (RBAC) — mỗi nhân viên chỉ xem được dữ liệu thuộc phạm vi công việc
-- Xác thực người dùng bằng mật khẩu mạnh, hỗ trợ xác thực hai yếu tố (2FA)
-- Ghi nhận nhật ký truy cập và thao tác (audit log) cho mọi hành động trên hệ thống
-- Sao lưu dữ liệu tự động hàng ngày, lưu trữ bản sao lưu tối thiểu 30 ngày
-- Dữ liệu được lưu trữ trên máy chủ đặt tại Việt Nam, không chuyển ra nước ngoài
+- Mã hóa toàn bộ kết nối bằng HTTPS/TLS
+- Phân quyền truy cập theo vai trò — tài khoản do Admin tạo, không cho tự đăng ký
+- Sao lưu dữ liệu tự động hàng ngày, lưu trữ tối thiểu 30 ngày
+- Dữ liệu được lưu trữ trên máy chủ đặt tại Việt Nam
 
 **Bảo mật vận hành:**
 - Không chia sẻ, bán hoặc sử dụng dữ liệu bệnh nhân cho bất kỳ mục đích nào ngoài phạm vi hợp đồng
-- Chỉ nhân sự kỹ thuật được ủy quyền của FixPartner mới có quyền truy cập hệ thống ở cấp quản trị
-- Cam kết thông báo cho bệnh viện trong vòng **72 giờ** khi phát hiện sự cố bảo mật hoặc rò rỉ dữ liệu (theo đúng quy định pháp luật)
-- Khi kết thúc hợp đồng, FixPartner sẽ bàn giao toàn bộ dữ liệu và xóa sạch dữ liệu trên máy chủ theo yêu cầu của bệnh viện
+- Chỉ nhân sự kỹ thuật được ủy quyền của FixPartner mới có quyền truy cập ở cấp quản trị
+- Cam kết thông báo cho bệnh viện trong vòng **72 giờ** khi phát hiện sự cố bảo mật
+- Khi kết thúc hợp đồng, bàn giao toàn bộ dữ liệu và xóa sạch dữ liệu trên server
 
 **Hỗ trợ quyền bệnh nhân:**
-- Hệ thống là công cụ **nội bộ dành cho nhân viên** — bệnh nhân không trực tiếp truy cập. Khi bệnh nhân yêu cầu xem, sửa hoặc xóa dữ liệu cá nhân, nhân viên bệnh viện sẽ thực hiện thao tác trên CRM.
-- Hệ thống hỗ trợ các chức năng tra cứu, chỉnh sửa và xóa dữ liệu để bệnh viện đáp ứng yêu cầu của bệnh nhân đúng thời hạn pháp luật (xác nhận trong 2 ngày làm việc, xử lý trong 10-20 ngày theo NĐ 356/2025/NĐ-CP).
+- Hệ thống là công cụ **nội bộ dành cho nhân viên** — bệnh nhân không trực tiếp truy cập
+- Hỗ trợ tra cứu, chỉnh sửa và xóa dữ liệu để bệnh viện đáp ứng yêu cầu của bệnh nhân theo quy định pháp luật
 
-### 7.4. Tuân thủ quy định pháp luật
-
-Hệ thống được thiết kế tuân thủ các văn bản pháp luật hiện hành:
+### 6.5. Tuân thủ quy định pháp luật
 
 | Văn bản | Nội dung liên quan |
 |---------|-------------------|
-| **Luật Bảo vệ Dữ liệu Cá nhân** (Luật 91/2025/QH15, hiệu lực 01/01/2026) | Khung pháp lý chính về bảo vệ DLCN, thay thế NĐ 13/2023 |
-| **Nghị định 356/2025/NĐ-CP** | Hướng dẫn chi tiết Luật BVDLCN: DPIA, DPO, thời hạn phản hồi, xử phạt |
+| **Luật Bảo vệ Dữ liệu Cá nhân** (Luật 91/2025/QH15) | Khung pháp lý chính về bảo vệ DLCN |
+| **Nghị định 356/2025/NĐ-CP** | Hướng dẫn chi tiết: DPIA, DPO, thời hạn phản hồi |
 | **Luật An toàn Thông tin Mạng** (86/2015/QH13) | Yêu cầu bảo mật hệ thống thông tin |
-| **Thông tư 46/2018/TT-BYT** | Quy định hồ sơ bệnh án điện tử, yêu cầu lưu trữ dữ liệu y tế |
-| **Thông tư 53/2014/TT-BYT** | Điều kiện hoạt động y tế trên môi trường mạng |
-
-**Về dữ liệu y tế nhạy cảm:**
-
-Dữ liệu sức khỏe của bệnh nhân được phân loại là **dữ liệu cá nhân nhạy cảm** theo Luật 91/2025. Dù hệ thống CRM chỉ sử dụng nội bộ, nghĩa vụ pháp lý vẫn áp dụng đầy đủ vì dữ liệu nhạy cảm vẫn đang được xử lý. Cụ thể:
-
-- **Đánh giá tác động (DPIA):** Bệnh viện cần thực hiện và nộp hồ sơ DPIA trong vòng 60 ngày kể từ ngày bắt đầu xử lý dữ liệu trên hệ thống CRM. FixPartner sẽ **hỗ trợ cung cấp thông tin kỹ thuật** cần thiết.
-- **Nhân sự bảo vệ dữ liệu (DPO):** Bệnh viện cần chỉ định nhân sự hoặc bộ phận phụ trách bảo vệ dữ liệu cá nhân (bắt buộc khi xử lý dữ liệu nhạy cảm). FixPartner sẽ **phối hợp kỹ thuật** với bộ phận này.
-- **Về sự đồng ý:** Việc thu thập đồng ý xử lý dữ liệu sức khỏe thuộc trách nhiệm của bệnh viện tại khâu tiếp đón bệnh nhân (trên HIS/HIT). CRM không trực tiếp thu thập dữ liệu từ bệnh nhân mà chỉ xử lý dữ liệu đã được bệnh viện thu thập hợp pháp.
+| **Thông tư 46/2018/TT-BYT** | Quy định hồ sơ bệnh án điện tử |
 
 **Phân định trách nhiệm:**
-
-- Bệnh viện là **Bên kiểm soát dữ liệu** — chịu trách nhiệm pháp lý chính về thu thập, xử lý và bảo vệ dữ liệu cá nhân bệnh nhân, bao gồm thực hiện DPIA, chỉ định DPO, và thu thập sự đồng ý.
-- FixPartner là **Bên xử lý dữ liệu** — cung cấp và vận hành hệ thống theo ủy quyền của bệnh viện, cam kết không sử dụng dữ liệu cho mục đích riêng.
-- Hai bên sẽ ký **Thỏa thuận Xử lý Dữ liệu Cá nhân (DPA)** theo quy định tại Luật 91/2025, nêu rõ phạm vi, mục đích xử lý và biện pháp bảo mật.
-
-**Giới hạn trách nhiệm:**
-
-- Trách nhiệm của mỗi bên được thực hiện theo đúng quy định pháp luật hiện hành và các điều khoản chi tiết trong hợp đồng.
-- Mức phạt vi phạm hợp đồng (nếu có) theo quy định tại Điều 301 Luật Thương mại 2005.
-- FixPartner không chịu trách nhiệm về thiệt hại phát sinh từ các sự kiện bất khả kháng.
-- Khi phát sinh vấn đề liên quan đến dữ liệu, FixPartner sẽ phối hợp cung cấp thông tin hiện trạng hệ thống để các bên cùng xử lý.
+- Bệnh viện là **Bên kiểm soát dữ liệu** — chịu trách nhiệm pháp lý chính, bao gồm DPIA, DPO, thu thập sự đồng ý.
+- FixPartner là **Bên xử lý dữ liệu** — cung cấp và vận hành hệ thống theo ủy quyền, cam kết không sử dụng dữ liệu cho mục đích riêng.
+- Hai bên sẽ ký **Thỏa thuận Xử lý Dữ liệu Cá nhân (DPA)** theo Luật 91/2025.
 
 ---
 
-## 8. Chi phí
+## 7. Chi phí
 
-*(Chi tiết sẽ được thống nhất trong hợp đồng)*
+### 7.1. Chi phí triển khai ban đầu
 
-| Hạng mục | Mô tả |
-|----------|-------|
-| **Chi phí triển khai ban đầu** | Bao gồm: phân tích, tích hợp HIS/HIT/IMS, cấu hình hệ thống, đào tạo |
-| **Chi phí vận hành hàng tháng** | Bao gồm: server, duy trì, hỗ trợ kỹ thuật, sao lưu dữ liệu |
-| **Chi phí phát triển thêm** | Tính theo yêu cầu phát sinh ngoài phạm vi ban đầu |
-| **Không phát sinh thêm** | Bản quyền phần mềm (nền tảng mã nguồn mở), phí người dùng |
+| # | Hạng mục | Giá trị (VNĐ) |
+|---|----------|---------------|
+| 1 | Phân tích dữ liệu, thiết kế hệ thống | 20.000.000 |
+| 2 | Phát triển module tích hợp HIS/HIT/IMS | 40.000.000 |
+| 3 | Thiết lập hệ thống CRM | 25.000.000 |
+| 4 | Hỗ trợ hypercare & đào tạo | 15.000.000 |
+| | **Tổng** | **100.000.000** |
+
+### 7.2. Chi phí vận hành hàng tháng
+
+| # | Hạng mục | Giá trị (VNĐ/tháng) |
+|---|----------|---------------------|
+| 1 | Server, hạ tầng | 900.000 |
+| 2 | Sao lưu dữ liệu | 300.000 |
+| 3 | Duy trì, hỗ trợ kỹ thuật | 800.000 |
+| | **Tổng** | **2.000.000** |
+
+### 7.3. Thanh toán
+
+- **Triển khai:** 50% khi ký hợp đồng, 50% khi nghiệm thu
+- **Vận hành:** Thanh toán 6 tháng/lần (12.000.000 VNĐ/kỳ)
+- **Phát triển thêm:** Tính theo yêu cầu phát sinh ngoài phạm vi, báo giá riêng
 
 ---
 
-## 9. Cam kết dịch vụ (SLA)
+## 8. Cam kết dịch vụ (SLA)
 
 | Hạng mục | Cam kết |
 |----------|---------|
@@ -266,49 +437,40 @@ Dữ liệu sức khỏe của bệnh nhân được phân loại là **dữ li�
 | **Thời gian khắc phục** | Sự cố nghiêm trọng: ≤ 24 giờ; Sự cố thường: ≤ 72 giờ |
 | **Khung giờ hỗ trợ** | 8h–18h, thứ 2–thứ 6 (trừ lễ/Tết), qua Zalo/điện thoại |
 | **Bảo trì định kỳ** | Thông báo trước tối thiểu 24 giờ, thực hiện ngoài giờ hành chính |
+| **Sao lưu** | Tự động hàng ngày, giữ 30 bản, kiểm tra khôi phục 1 lần/tháng |
 
 **Quy trình dự phòng khi hệ thống gián đoạn:**
-- Nhân viên CSKH có thể tạm thời quay lại quy trình xuất Excel từ HIS/HIT như hiện tại
-- FixPartner sẽ thông báo ngay khi hệ thống gặp sự cố và cập nhật tiến độ khắc phục
+- Nhân viên CSKH có thể tạm thời quay lại quy trình xuất Excel từ HIS/HIT
+- FixPartner thông báo ngay khi có sự cố và cập nhật tiến độ khắc phục
+
+**Bảo hành:** 3 tháng miễn phí sau nghiệm thu — bao gồm sửa lỗi, điều chỉnh cấu hình, hỗ trợ kỹ thuật.
 
 ---
 
-## 10. Điều kiện tiên quyết về tích hợp
-
-> **Lưu ý quan trọng:** Khả năng tự động hóa của hệ thống phụ thuộc hoàn toàn vào việc HIS/HIT/IMS có cung cấp API hoặc phương thức trích xuất dữ liệu tự động hay không.
-
-| Kịch bản | Mức độ tự động | Ảnh hưởng |
-|----------|---------------|-----------|
-| HIS/HIT/IMS **có API** | Tự động hoàn toàn | Như mô tả trong đề xuất này |
-| HIS/HIT/IMS **chỉ xuất được file** (Excel/CSV) | Bán tự động | Nhân viên IT xuất file định kỳ, CRM tự import và xử lý — vẫn giảm đáng kể thao tác thủ công |
-| HIS/HIT/IMS **không hỗ trợ gì** | Hạn chế | Nhân viên nhập liệu trên CRM — chỉ tập trung được dữ liệu, chưa giảm nhiều thao tác |
-
-FixPartner đề xuất **Giai đoạn 0: Khảo sát kỹ thuật (1 tuần, miễn phí)** để đánh giá khả năng tích hợp thực tế trước khi triển khai, tránh rủi ro cho cả hai bên.
-
----
-
-## 11. Quyền sở hữu & chuyển giao
+## 9. Quyền sở hữu & chuyển giao
 
 | Hạng mục | Chi tiết |
 |----------|----------|
-| **Nền tảng** | Mã nguồn mở (Open Source), không phụ thuộc bản quyền nhà cung cấp |
-| **Dữ liệu** | Thuộc quyền sở hữu hoàn toàn của bệnh viện — có thể yêu cầu xuất toàn bộ dữ liệu bất kỳ lúc nào |
-| **Chuyển đổi nhà cung cấp** | Bệnh viện có thể tự vận hành hoặc chuyển sang đơn vị khác — FixPartner sẽ hỗ trợ bàn giao kỹ thuật |
-| **Kết thúc hợp đồng** | Bàn giao toàn bộ dữ liệu, mã nguồn đã tùy chỉnh, tài liệu kỹ thuật. Xóa sạch dữ liệu trên server FixPartner trong 30 ngày |
+| **Dữ liệu** | Thuộc quyền sở hữu hoàn toàn của bệnh viện — có thể yêu cầu xuất toàn bộ bất kỳ lúc nào |
+| **Mã nguồn** | Toàn bộ mã nguồn hệ thống và tài liệu kỹ thuật được bàn giao đầy đủ khi nghiệm thu |
+| **Chuyển đổi** | Bệnh viện có thể tự vận hành hoặc chuyển sang đơn vị khác — FixPartner hỗ trợ bàn giao |
+| **Kết thúc HĐ** | Bàn giao toàn bộ dữ liệu, mã nguồn, tài liệu. Xóa sạch dữ liệu trên server trong 30 ngày |
 
 ---
 
-## 12. Thời gian dự kiến
+## 10. Yêu cầu hợp tác từ bệnh viện
 
-| Giai đoạn | Thời gian | Mốc hoàn thành |
-|-----------|-----------|----------------|
-| GĐ0: Khảo sát kỹ thuật HIS/HIT/IMS | 1 tuần (miễn phí) | Trước khi khởi động |
-| GĐ1: Phân tích & tích hợp | 2-3 tuần | Tuần 3 sau khi khởi động |
-| GĐ2: Giao diện & quy trình chăm sóc | 2 tuần | Tuần 5 |
-| GĐ3: Báo cáo & bàn giao | 1 tuần | Tuần 6 |
-| Vận hành song song | 1-2 tuần | Tuần 7-8 |
+Chi tiết theo từng giai đoạn xem tại mục 5.4. Tóm tắt:
 
-**Tổng thời gian dự kiến: 7-9 tuần** (bao gồm khảo sát, tùy thuộc mức độ phức tạp của tích hợp HIS/HIT/IMS)
+| # | Yêu cầu | Giai đoạn |
+|---|---------|-----------|
+| 1 | Cử 1-2 NV CSKH làm việc cùng BA để review quy trình | GĐ1 — Khảo sát |
+| 2 | Cung cấp tài khoản HIS/HIT/IMS hoặc file mẫu thực tế | GĐ1 — Khảo sát |
+| 3 | Phối hợp IT để khảo sát API hoặc thống nhất quy trình xuất file | GĐ1 — Khảo sát |
+| 4 | Xác nhận bảng mapping và quy tắc nghiệp vụ | Cuối GĐ1 |
+| 5 | Chọn domain production (hoặc dùng domain FixPartner cung cấp) | GĐ3 — Triển khai |
+| 6 | Cử NV tham gia đào tạo và vận hành song song | GĐ3 — Triển khai |
+| 7 | Trưởng phòng xác nhận nghiệm thu | Cuối GĐ3 |
 
 ---
 
